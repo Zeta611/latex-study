@@ -1,0 +1,281 @@
+\documentclass[a4paper,amsmath,itemph]{oblivoir}
+
+\usepackage{fapapersize}
+\usefapapersize{*,*,1in,*,1in,*}
+
+\makeatletter
+\let\ATonum\@onum
+\makeatother
+
+\usepackage{xcolor}
+\usepackage{relsize}
+\usepackage{tcolorbox}
+\tcbuselibrary{listings,breakable}
+\tcbset{listing engine=listings,colframe=cyan,colback=cyan!5!white}
+
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\setmonofont{Noto Sans Mono}
+\setkomainfont[Noto Serif CJK KR]()( Bold)( Medium)
+\setkosansfont[Noto Sans CJK KR]()( Bold)( Medium)
+\usepackage{unicode-math}
+\setmathfont{libertinusmath-regular.otf}
+
+\setlength{\parindent}{0mm}
+
+\newcommand\pkg[1]{\textsf{#1}}
+
+\ExplSyntaxOn 
+
+\NewDocumentEnvironment {intro} {o}
+{
+    \IfValueTF { #1 }
+    {
+        \int_set:Nn \l_tmpa_int { #1 }
+    }
+    {
+        \int_set:Nn \l_tmpa_int { 1 }
+    }
+    \noindent \rule {\linewidth}{3pt}
+    \par 
+    \sffamily [No.\space\int_use:N \l_tmpa_int ]\ \ 
+    \bfseries
+}
+{
+    \hfill \underline{\hphantom{2019}}년~\underline{\hphantom{06}}월~ \underline{\hphantom{25}}일 
+    \par 
+    \vskip -.3\baselineskip 
+    \noindent \rule {\linewidth }{1pt}
+    \par 
+    \vskip .5\baselineskip 
+}
+
+\NewDocumentCommand \exverb { d|| }
+{
+	\texttt { \tl_to_str:n { #1 } }
+}
+
+\ExplSyntaxOff 
+
+\NewDocumentEnvironment {questiona} { m }
+{
+%	\medskip
+	\begin{tcolorbox}[title={#1},fonttitle={\sffamily\bfseries}]
+}{%
+	\end{tcolorbox}
+}
+
+\NewDocumentEnvironment {questionp} { }
+{
+%	\medskip
+	\begin{tcolorbox}[colframe=orange!30!black!60,colbacktitle=orange!25!gray,
+	title={연습문제},fonttitle={\sffamily\bfseries}]
+}{%
+	\end{tcolorbox}
+}
+
+
+\NewDocumentEnvironment {exampleonly} {}
+{%
+	\medskip
+%	\begin{tcblisting}{listing only}
+	\expandafter\tcblisting{listing only,breakable}
+}{
+	\endtcblisting
+%	\end{tcblisting}
+}
+
+\NewDocumentEnvironment {exampleside} {}
+{%
+	\medskip
+	\begin{tcblisting}{listing side text,breakable}
+}{%
+	\end{tcblisting}
+}
+
+
+\begin{document}
+
+\begin{intro}[2]
+Ready, Set, Go
+\end{intro}
+
+\begin{questiona}{문제}
+문자열 인자를 받아서 각 글자마다 \verb|\fbox|를 치는 명령 \verb|\foobox|를 작성하여라.
+\tcblower 
+입력: \verb|\foobox{Korea}|\\
+출력: \fbox{K}\fbox{o}\fbox{r}\fbox{e}\fbox{a}
+\end{questiona}
+
+
+\vfill
+
+\begin{questionp}
+\fbox{기본} 1. 문제에서 제시한 \verb|\foobox|에서 각 글자에 아래 예시와 같이 색상을 입혀보아라. 각 글자 사이에 1pt의 간격을 둔다.
+
+\bigskip
+
+\fbox{기본} 2. \verb|\foobox|에서 인자로 주어진 글자 수를 세어서 마지막에 괄호와 함께 표현하는 명령 \verb|\barbox|를 작성하여라.
+
+\bigskip
+
+\fbox{발전} 3. 기본 문제 2번의 색상상자를 홀수번째 오는 문자에만 적용하도록 \verb|\baroddbox| 명령을 작성하여라. 문자 사이에는 1pt의 간격을 둔다.
+\tcblower
+1. \begin{minipage}[t]{\dimexpr\textwidth-3em\relax}
+입력: \verb|\foobox{world}|\\
+출력: \colorbox{red}{\color{yellow}w}\hskip1pt\colorbox{red}{\color{yellow}o}\hskip1pt\colorbox{red}{\color{yellow}r}\hskip1pt\colorbox{red}{\color{yellow}l}\hskip1pt\colorbox{red}{\color{yellow}d}
+\end{minipage}
+
+\smallskip
+
+2. \begin{minipage}[t]{\dimexpr\textwidth-3em\relax}
+입력: \verb|\barbox{world}| \\
+출력: \colorbox{red}{\color{yellow}w}\hskip1pt\colorbox{red}{\color{yellow}o}\hskip1pt\colorbox{red}{\color{yellow}r}\hskip1pt\colorbox{red}{\color{yellow}l}\hskip1pt\colorbox{red}{\color{yellow}d} (5)
+\end{minipage}
+
+\smallskip
+
+3. \begin{minipage}[t]{\dimexpr\textwidth-3em\relax}
+입력: \verb|\oddbarbox{world}| \\
+출력: \colorbox{red}{\color{yellow}w}\hskip1pt o\hskip1pt\colorbox{red}{\color{yellow}r}\hskip1pt l\hskip1pt\colorbox{red}{\color{yellow}d} (5)
+\end{minipage}
+\end{questionp}
+
+\vfill
+
+\clearpage
+
+\begin{questiona}{문제}
+주어지는 문자열을 3개 단위로 끊어서 다음 출력예와 같이 배열하여라. 마지막 항목은 3개가 되지 않을 수 있으며 스페이스는 무시한다.
+\tcblower
+입력: \verb|\scmd{abcdefg hijklmn}|\\
+출력: 
+\begin{tabular}[t]{ll}
+abc & def \\
+ghi & jkl \\
+mn & \\
+\end{tabular}
+\end{questiona}
+
+\vfill
+
+\begin{questionp}
+\fbox{기본} 1. 명령 \verb|\acmd|는 두 개의 인자를 받는다. 첫 번째 인자는 숫자이며 두 번째 인자는 임의의 문자열이다. 만약 문자열이 지정된 숫자보다 크다면 앞에서부터 숫자에 해당되는 번째 문자까지만 출력하라. 만약 문자열이 지정된 숫자보다 작다면 문자열의 앞쪽에 \verb|_|(언더스코어)를 붙여 $n$개의 문자열이 되도록 하라.
+
+\bigskip
+
+\fbox{발전} 2. Python에는 문자열을 자르는(슬라이싱) 재미있는 기법이 있다. \verb|\myslicing| 명령을 정의하되, 3개의 인자를 받아들이도록 하여 첫 인자로 주어지는 문자열을 \verb|#2|부터 \verb|#3|까지 슬라이싱하여(즉 \verb|mystring[|$m$\verb|:|$n$\verb|]|과 비슷) 출력하도록 하여라. 스페이스는 무시한다.
+
+\bigskip
+
+\fbox{발전} 3. 새로운 명령 \verb|\myitemswap|을 정의한다. 이 명령은 네 개의 인자를 받아들이며 첫 번째 인자가 문자열이다. 두 번째와 세 번째는 숫자인데, 주어지는 문자열의 아이템 번호들이다. 마지막 네 번째 인자는 임의의 매크로를 받는다. 주어진 문자열에서 \verb|#2|번째 항목과 \verb|#3|번째 항목을 교환(swap)하여 네 번째로 주어진 매크로에 넣어 반환하라. 숫자가 문자열의 범위를 벗어날 때의 에러처리 코드를 포함하라.
+
+\tcblower
+
+1. \begin{minipage}[t]{\dimexpr\textwidth-3em\relax}
+입력: \verb|\acmd{5}{beautiful}\quad \acmd{5}{abc}| \\
+출력: beaut\quad \textunderscore\textunderscore abc
+\end{minipage}
+
+\medskip
+
+2. \begin{minipage}[t]{\dimexpr\textwidth-3em\relax}
+입력: \verb|\myslicing{Hello world}{3}{7}| \\
+출력: llowo
+\end{minipage}
+
+\medskip
+
+3. \begin{minipage}[t]{\dimexpr\textwidth-3em\relax}
+입력: \verb|\myitemswap{abcde}{2}{4}{\myresult}| \\
+출력: \verb|\myresult| $\rightarrow$ adcbe
+\end{minipage} 
+\end{questionp}
+
+\vfill
+
+\clearpage
+
+
+\begin{questiona}{문제}
+다음 실행의 결과가 어떠할지 예측해보아라. 실제로 예상과 같은지 확인해보아라.
+\end{questiona}
+
+\begin{verbatim}
+\ExplSyntaxOn
+\tl_new:N \l_tmpc_tl
+
+\tl_set:Nn \l_tmpa_tl { foo }
+\tl_set:Nn \l_tmpb_tl { \l_tmpa_tl }
+\tl_set:No \l_tmpc_tl { \l_tmpa_tl }
+
+\tl_set:Nn \l_tmpa_tl { bar }
+
+\tl_use:N \l_tmpb_tl
+\tl_use:N \l_tmpc_tl
+\ExplSyntaxOff
+\end{verbatim}
+
+\vfill
+
+\begin{questionp}
+\fbox{기본} 1. 주어지는 문자열을 앞에서부터 3개째마다 쉼표를 추가하는 명령을 작성하여라.
+\tcblower
+입력: \verb|\test{this is just a test}| \\
+출력: thi, sis, jus, tat, est
+\end{questionp}
+
+
+\vfill
+
+\clearpage
+
+\begin{questiona}{문제}
+새로운 명령 \verb|\newcmd|는 다음과 같은 형식으로 실행한다.\\
+\verb|\newcmd{abc, de, fgh, i, jkl}|\\
+쉼표로 분리된 각 항목을 enumerate으로 배열하여라.
+\tcblower
+입력: \verb|\newcmd{abc, de, fgh, i, jkl}| \\
+출력:
+\begin{enumerate} \tightlist
+\item abc
+\item de
+\item fgh
+\item i
+\item jkl
+\end{enumerate}
+\end{questiona}
+
+\vfill
+
+\begin{questionp}
+\fbox{기본} 1. 새로운 명령 \verb|\newcmd|는 다음과 같은 형식으로 실행한다.\\
+\verb|\newcmd{this is just a test}|\\
+주어지는 인자를 먼저 세 개마다 쉼표를 붙여 분리하고, 분리된 각 단어를 \verb|\resi|, \verb|\resii|, \verb|\resiii|, \verb|\resiv|, \ldots 에 넣어 반환하라.
+
+\bigskip
+
+\fbox{발전} 2. 인자로 주어지는 단어의 각 문자가 몇 번씩 사용되었는지를 예시와 같이 출력하여라.
+
+\tcblower
+1. \begin{minipage}[t]{\dimexpr\textwidth-3em\relax}
+입력: \verb|\newcmd{this is just a test}|\\
+출력: \verb|\resi| $\rightarrow$ thi, \verb|\resiv| $\rightarrow$ tat
+\end{minipage}
+
+\medskip
+
+2. \begin{minipage}[t]{\dimexpr\textwidth-3em\relax}
+입력: \verb|\testcmd{abaracadabra}| \\
+출력: a = 6, b = 2, c = 1, d = 1, r = 2
+\end{minipage}
+
+\end{questionp}
+
+\vfill
+
+
+\hfill Nova de Hi.
+
+
+\end{document}

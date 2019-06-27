@@ -1,0 +1,133 @@
+\documentclass[a4paper,amsmath,itemph]{oblivoir}
+
+\usepackage{fapapersize}
+\usefapapersize{*,*,1in,*,1in,*}
+
+\makeatletter
+\let\ATonum\@onum
+\makeatother
+
+\usepackage{relsize}
+\usepackage{tcolorbox}
+\tcbuselibrary{listings,breakable}
+\tcbset{listing engine=listings,colframe=cyan,colback=cyan!5!white}
+
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\setmonofont{Noto Sans Mono}
+\setkomainfont[Noto Serif CJK KR]()(Bold)(Medium)
+\setkosansfont[Noto Sans CJK KR]()(Bold)(Medium)
+\usepackage{unicode-math}
+\setmathfont{libertinusmath-regular.otf}
+
+\setlength{\parindent}{0mm}
+
+\ExplSyntaxOn
+
+\NewDocumentEnvironment {intro} {o}
+{
+  \IfValueTF { #1 }
+  {
+    \int_set:Nn \l_tmpa_int { #1 }
+  }
+  {
+    \int_set:Nn \l_tmpa_int { 1 }
+  }
+  \noindent \rule {\linewidth}{3pt}
+  \par 
+  \sffamily [No.\space\int_use:N \l_tmpa_int ]\ \ 
+  \bfseries
+}
+{
+  \hfill 2019년~6월~27일
+  \par
+  \vskip -.3\baselineskip
+  \noindent \rule {\linewidth}{1pt}
+  \par
+  \vskip .5\baselineskip
+}
+
+\cs_new:Npn \hello_fn_one:n #1
+  {
+    Hello, ~ \textit{#1} !
+  }
+
+\NewDocumentCommand \hellocmdone { m }
+  {
+    \hello_fn_one:n { #1 }
+  }
+
+\cs_new:Npn \hello_fn_two:n #1
+  {
+    Hello, ~ \tl_mixed_case:n { #1 } !
+  }
+
+\NewDocumentCommand \hellocmdtwo { m }
+  {
+    \hello_fn_two:n { #1 }
+  }
+\ExplSyntaxOff
+
+\begin{document}
+
+\begin{intro}
+  Hello, world
+\end{intro}
+
+이재호 풀이.
+
+\medskip
+
+\begin{tcolorbox}[title={연습문제 1},fonttitle=\sffamily]
+문제에서 제시한 \verb|\hellocmd|에서 인자로 주어진 이름을 이탤릭체로 식자하도록 해보아라.
+
+\tcblower
+
+\begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \hello_fn:n #1
+  {
+    Hello, ~ \textit{#1} !
+  }
+
+\NewDocumentCommand \hellocmd { m }
+  {
+    \hello_fn:n { #1 }
+  }
+\ExplSyntaxOff
+\end{verbatim}
+
+\begin{tcolorbox}{}
+입력: \verb|\hellocmd{expl3}|\\
+출력: \hellocmdone{expl3}
+\end{tcolorbox}
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={연습문제 2},fonttitle=\sffamily]
+문제에서 제시한 \verb|\hellocmd|를, 넘어온 인자의 첫 글자를 대문자로 바꾸어 출력하도록 작성하여라.
+
+\tcblower
+
+\begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \hello_fn:n #1
+  {
+    Hello, ~ \tl_mixed_case:n { #1 } !
+  }
+
+\NewDocumentCommand \hellocmd { m }
+  {
+    \hello_fn:n { #1 }
+  }
+\ExplSyntaxOff
+\end{verbatim}
+
+\begin{tcolorbox}{}
+입력: \verb|\hellocmd{expl3}|\\
+출력: \hellocmdtwo{expl3}
+\end{tcolorbox}
+
+\end{tcolorbox}
+
+\end{document}
