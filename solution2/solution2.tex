@@ -1,0 +1,129 @@
+\documentclass[a4paper,amsmath,itemph]{oblivoir}
+
+\usepackage{fapapersize}
+\usefapapersize{*,*,1in,*,1in,*}
+
+\makeatletter
+\let\ATonum\@onum
+\makeatother
+
+\usepackage{relsize}
+\usepackage{tcolorbox}
+\tcbuselibrary{listings,breakable}
+\tcbset{listing engine=listings,colframe=cyan,colback=cyan!5!white}
+
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\setmonofont{Noto Sans Mono}
+\setkomainfont[Noto Serif CJK KR]()(Bold)(Medium)
+\setkosansfont[Noto Sans CJK KR]()(Bold)(Medium)
+\usepackage{unicode-math}
+\setmathfont{libertinusmath-regular.otf}
+
+\setlength{\parindent}{0mm}
+
+\ExplSyntaxOn
+
+\NewDocumentEnvironment {intro} {o}
+  {
+    \IfValueTF { #1 }
+      {
+        \int_set:Nn \l_tmpa_int { #1 }
+      }
+      {
+        \int_set:Nn \l_tmpa_int { 1 }
+      }
+    \noindent \rule {\linewidth}{3pt}
+    \par 
+    \sffamily [No.\space\int_use:N \l_tmpa_int ]\ \ 
+    \bfseries
+  }
+{
+  \hfill 2019년~6월~29일
+  \par
+  \vskip -.3\baselineskip
+  \noindent \rule {\linewidth}{1pt}
+  \par
+  \vskip .5\baselineskip
+}
+
+\ExplSyntaxOn
+\cs_new:Npn \foo_fn:n #1
+  {
+    \tl_set:Nn \l_tmpa_tl { #1 }
+    \fbox{ \tl_head:N \l_tmpa_tl } \foo_fn:n { \tl_tail:N \l_tmpa_tl }
+  }
+
+\NewDocumentCommand \foobox { m }
+  {
+    \foo_fn:n { #1 }
+  }
+\ExplSyntaxOff
+
+\begin{document}
+
+\begin{intro}[2]
+  Ready, Set, Go
+\end{intro}
+
+이재호 풀이.
+
+\medskip
+
+\begin{tcolorbox}[title={문제 1},fonttitle=\sffamily\bfseries]
+  문자열 인자를 받아서 각 글자마다 \verb|\fbox|를 치는 명령 \verb|\foobox|를
+  작성하여라.
+
+  \tcblower
+
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \foo_fn:n #1
+  {
+    \tl_set:Nn \l_tmpa_tl { #1 }
+    \fbox{ \tl_head:N \l_tmpa_tl } \foo_fn:n { \tl_tail:N \l_tmpa_tl }
+  }
+
+\NewDocumentCommand \foobox { m }
+  {
+    \foo_fn:n { #1 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\foobox{expl3}|\\
+    출력: %\foobox{expl3}
+  \end{tcolorbox}
+
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[title={문제 3},fonttitle=\sffamily\bfseries]
+  다음 실행의 결과가 어떠할지 예측해보아라.
+  실제로 예상과 같은지 확인해보아라.
+
+  \tcblower
+
+  \begin{verbatim}
+\ExplSyntaxOn
+\tl_new:N \l_tmpc_tl
+
+\tl_set:Nn \l_tmpa_tl { foo }
+\tl_set:Nn \l_tmpb_tl { \l_tmpa_tl }
+\tl_set:No \l_tmpc_tl { \l_tmpa_tl }
+
+\tl_set:Nn \l_tmpa_tl { bar }
+
+\tl_use:N \l_tmpb_tl
+\tl_use:N \l_tmpc_tl
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    출력: barfoo
+  \end{tcolorbox}
+
+\end{tcolorbox}
+
+\end{document}
