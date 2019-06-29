@@ -48,15 +48,19 @@
 }
 
 \ExplSyntaxOn
-\cs_new:Npn \foo_fn:n #1
+\cs_new:Npn \foo_fn:o #1
   {
-    \tl_set:Nn \l_tmpa_tl { #1 }
-    \fbox{ \tl_head:N \l_tmpa_tl } \foo_fn:n { \tl_tail:N \l_tmpa_tl }
+    \tl_set:Nx \l_tmpa_tl { #1 }
+    \tl_if_empty:oF { \l_tmpa_tl }
+      {
+        \fbox { \tl_head:N \l_tmpa_tl }
+        \foo_fn:o { \tl_tail:N \l_tmpa_tl }
+      }
   }
 
 \NewDocumentCommand \foobox { m }
   {
-    \foo_fn:n { #1 }
+    \foo_fn:o { #1 }
   }
 \ExplSyntaxOff
 
@@ -78,22 +82,26 @@
 
   \begin{verbatim}
 \ExplSyntaxOn
-\cs_new:Npn \foo_fn:n #1
+\cs_new:Npn \foo_fn:o #1
   {
-    \tl_set:Nn \l_tmpa_tl { #1 }
-    \fbox{ \tl_head:N \l_tmpa_tl } \foo_fn:n { \tl_tail:N \l_tmpa_tl }
+    \tl_set:Nx \l_tmpa_tl { #1 }
+    \tl_if_empty:oF { \l_tmpa_tl }
+      {
+        \fbox { \tl_head:N \l_tmpa_tl }
+        \foo_fn:o { \tl_tail:N \l_tmpa_tl }
+      }
   }
 
 \NewDocumentCommand \foobox { m }
   {
-    \foo_fn:n { #1 }
+    \foo_fn:o { #1 }
   }
 \ExplSyntaxOff
   \end{verbatim}
 
   \begin{tcolorbox}{}
     입력: \verb|\foobox{expl3}|\\
-    출력: %\foobox{expl3}
+    출력: \foobox{expl3}
   \end{tcolorbox}
 
 \end{tcolorbox}
