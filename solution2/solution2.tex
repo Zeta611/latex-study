@@ -15,10 +15,10 @@
 \setmainfont{Noto Serif}
 \setsansfont{Noto Sans}
 \setmonofont{Noto Sans Mono}
-\setkomainfont[Noto Serif CJK KR]()(Bold)(Medium)
-\setkosansfont[Noto Sans CJK KR]()(Bold)(Medium)
+\setkomainfont[Noto Serif CJK KR]()( Bold)( Medium)
+\setkosansfont[Noto Sans CJK KR]()( Bold)( Medium)
 \usepackage{unicode-math}
-\setmathfont{libertinusmath-regular.otf}
+\setmathfont{Libertinus Math}
 
 \setlength{\parindent}{0mm}
 
@@ -38,31 +38,658 @@
     \sffamily [No.\space\int_use:N \l_tmpa_int ]\ \ 
     \bfseries
   }
-{
-  \hfill 2019년~6월~29일
-  \par
-  \vskip -.3\baselineskip
-  \noindent \rule {\linewidth}{1pt}
-  \par
-  \vskip .5\baselineskip
-}
+  {
+    \hfill 2019년~6월~29일
+    \par
+    \vskip -.3\baselineskip
+    \noindent \rule {\linewidth}{1pt}
+    \par
+    \vskip .5\baselineskip
+  }
 
-\ExplSyntaxOn
-\cs_new:Npn \foo_fn:o #1
+\NewDocumentEnvironment {questiona} { m }
+  {
+    \begin{tcolorbox}[title={문제~#1},fonttitle={\sffamily\bfseries},breakable]
+  }
+  {
+    \end{tcolorbox}
+  }
+
+\NewDocumentEnvironment {questionp} { m }
+  {
+    \begin{tcolorbox}[colframe=orange!30!black!60,colbacktitle=orange!25!gray,
+    title={연습문제~#1},fonttitle={\sffamily\bfseries},breakable]
+  }
+  {
+    \end{tcolorbox}
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 1 -- Solution 1 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new:Npn \foo_fn_rec:x #1
   {
     \tl_set:Nx \l_tmpa_tl { #1 }
     \tl_if_empty:oF { \l_tmpa_tl }
       {
         \fbox { \tl_head:N \l_tmpa_tl }
-        \foo_fn:o { \tl_tail:N \l_tmpa_tl }
+        \foo_fn_rec:x { \tl_tail:N \l_tmpa_tl }
       }
   }
 
-\NewDocumentCommand \foobox { m }
+\NewDocumentCommand \fooboxrec { m }
   {
-    \foo_fn:o { #1 }
+    \foo_fn_rec:x { #1 }
   }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 1 -- Solution 2 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new:Npn \foo_fn_map:n #1
+  {
+    \tl_map_inline:nn { #1 }
+      {
+        \fbox { ##1 }
+      }
+  }
+
+\NewDocumentCommand \fooboxmap { m }
+  {
+    \foo_fn_map:n { #1 }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 1 -- Solution 3 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new:Npn \foo_fn_recq:n #1
+  {
+    \quark_if_recursion_tail_stop:n { #1 }
+    \fbox { #1 }
+    \foo_fn_recq:n
+  }
+
+\NewDocumentCommand \fooboxrecq { m }
+  {
+    \foo_fn_recq:n #1 \q_recursion_tail \q_recursion_stop
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Practice 1.1 -- Solution 1 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new:Npn \colorfoo_fn_rec:x #1
+  {
+    \tl_set:Nx \l_tmpa_tl { #1 }
+    \tl_if_empty:oF { \l_tmpa_tl }
+      {
+        \fcolorbox{red}{red}{\color{yellow} \tl_head:N \l_tmpa_tl }
+        \tl_set:Nx \l_tmpb_tl { \tl_tail:N \l_tmpa_tl }
+
+        \tl_if_empty:oF { \l_tmpb_tl }
+          {
+            \hspace{1pt}
+            \colorfoo_fn_rec:x { \tl_tail:N \l_tmpa_tl }
+          }
+      }
+  }
+
+\NewDocumentCommand \colorfooboxrec { m }
+  {
+    \colorfoo_fn_rec:x { #1 }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Practice 1.1 -- Solution 2 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new:Npn \colorfoo_fn_map:n #1
+  {
+    \tl_map_inline:nn { #1 }
+      {
+        \fcolorbox{red}{red}{\color{yellow} ##1 }
+        \hspace{1pt}
+      }
+      \hspace{-1pt}
+  }
+
+\NewDocumentCommand \colorfooboxmap { m }
+  {
+    \colorfoo_fn_map:n { #1 }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Practice 1.1 -- Solution 3 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new:Npn \colorfoo_fn_recq:n #1
+  {
+    \quark_if_recursion_tail_stop_do:nn { #1 }
+      {
+        \hspace{-1pt}
+      }
+    \fcolorbox{red}{red}{\color{yellow} #1 }
+    \hspace{1pt}
+    \colorfoo_fn_recq:n
+  }
+
+\NewDocumentCommand \colorfooboxrecq { m }
+  {
+    \colorfoo_fn_recq:n #1 \q_recursion_tail \q_recursion_stop
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Practice 1.2 -- Solution 1 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new:Npn \bar_fn_rec:xn #1 #2
+  {
+    \tl_set:Nx \l_tmpa_tl { #1 }
+    \int_set:Nn \l_tmpa_int { #2 }
+    \tl_if_empty:oF { \l_tmpa_tl }
+      {
+        \fcolorbox{red}{red}{\color{yellow} \tl_head:N \l_tmpa_tl }
+        \tl_set:Nx \l_tmpb_tl { \tl_tail:N \l_tmpa_tl }
+
+        \tl_if_empty:oTF { \l_tmpb_tl }
+          {
+            {~}( \int_use:N \l_tmpa_int )
+          }
+          {
+            \hspace{1pt}
+            \int_incr:N \l_tmpa_int
+            \bar_fn_rec:xn { \l_tmpb_tl } { \l_tmpa_int }
+          }
+      }
+  }
+
+\NewDocumentCommand \barboxrec { m }
+  {
+    \bar_fn_rec:xn { #1 } { 1 }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Practice 1.2 -- Solution 2 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new:Npn \bar_fn_map:n #1
+  {
+    \int_zero:N \l_tmpa_int
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \fcolorbox{red}{red}{\color{yellow} ##1 }
+        \hspace{1pt}
+      }
+      \hspace{-1pt}
+      {~}( \int_use:N \l_tmpa_int )
+  }
+
+\NewDocumentCommand \barboxmap { m }
+  {
+    \bar_fn_map:n { #1 }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Practice 1.2 -- Solution 3 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new:Npn \bar_fn_recq:n #1
+  {
+    \quark_if_recursion_tail_stop_do:nn { #1 }
+      {
+        \hspace{-1pt}
+        {~}( \int_use:N \l_tmpa_int )
+      }
+    \int_incr:N \l_tmpa_int
+    \fcolorbox{red}{red}{\color{yellow} #1 }
+    \hspace{1pt}
+    \bar_fn_recq:n
+  }
+
+\NewDocumentCommand \barboxrecq { m }
+  {
+    \int_zero:N \l_tmpa_int
+    \bar_fn_recq:n #1 \q_recursion_tail \q_recursion_stop
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Practice 1.3 -- Solution 1 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new:Npn \oddbar_fn_rec:xn #1 #2
+  {
+    \tl_set:Nx \l_tmpa_tl { #1 }
+    \int_set:Nn \l_tmpa_int { #2 }
+    \tl_if_empty:oF { \l_tmpa_tl }
+      {
+        \int_if_odd:nTF \l_tmpa_int
+        {
+          \fcolorbox{red}{red}{\color{yellow} \tl_head:N \l_tmpa_tl }
+        }
+        {
+          \tl_head:N \l_tmpa_tl
+        }
+        \tl_set:Nx \l_tmpb_tl { \tl_tail:N \l_tmpa_tl }
+
+        \tl_if_empty:oTF { \l_tmpb_tl }
+          {
+            {~}( \int_use:N \l_tmpa_int )
+          }
+          {
+            \hspace{1pt}
+            \int_incr:N \l_tmpa_int
+            \oddbar_fn_rec:xn { \l_tmpb_tl } { \l_tmpa_int }
+          }
+      }
+  }
+
+\NewDocumentCommand \oddbarboxrec { m }
+  {
+    \oddbar_fn_rec:xn { #1 } { 1 }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Practice 1.3 -- Solution 2 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new:Npn \oddbar_fn_map:n #1
+  {
+    \int_zero:N \l_tmpa_int
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \int_if_odd:nTF \l_tmpa_int
+        {
+          \fcolorbox{red}{red}{\color{yellow} ##1 }
+        }
+        {
+          ##1
+        }
+        \hspace{1pt}
+      }
+      \hspace{-1pt}
+      {~}( \int_use:N \l_tmpa_int )
+  }
+
+\NewDocumentCommand \oddbarboxmap { m }
+  {
+    \oddbar_fn_map:n { #1 }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Practice 1.3 -- Solution 3 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new:Npn \oddbar_fn_recq:n #1
+  {
+    \quark_if_recursion_tail_stop_do:nn { #1 }
+      {
+        \hspace{-1pt}
+        {~}( \int_use:N \l_tmpa_int )
+      }
+    \int_incr:N \l_tmpa_int
+    \int_if_odd:nTF \l_tmpa_int
+    {
+      \fcolorbox{red}{red}{\color{yellow} #1 }
+    }
+    {
+      #1
+    }
+    \hspace{1pt}
+    \oddbar_fn_recq:n
+  }
+
+\NewDocumentCommand \oddbarboxrecq { m }
+  {
+    \int_zero:N \l_tmpa_int
+    \oddbar_fn_recq:n #1 \q_recursion_tail \q_recursion_stop
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 2 -- Solution 1 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tl_new:N \l_tablines_tl
+\cs_new:Npn \scmd_fn_rec:n #1
+  {
+    \quark_if_recursion_tail_stop:n { #1 }
+
+    \int_incr:N \l_tmpa_int
+    \tl_set:Nn \l_tmpa_tl { #1 }
+    \int_compare:nT { \int_mod:nn \l_tmpa_int 3 == 0 }
+      {
+        \int_compare:nTF { \int_mod:nn \l_tmpa_int 6 == 0 }
+          {
+            \tl_put_right:Nn \l_tmpa_tl { \tabularnewline }
+          }
+          {
+            \tl_put_right:Nn \l_tmpa_tl { \c_alignment_token }
+          }
+      }
+    \tl_put_right:Nx \l_tablines_tl { \l_tmpa_tl }
+    \scmd_fn_rec:n
+  }
+
+\NewDocumentCommand \scmdrec { m }
+  {
+    \tl_clear:N \l_tablines_tl
+    \int_zero:N \l_tmpa_int
+    \scmd_fn_rec:n #1 \q_recursion_tail \q_recursion_stop
+    \begin{tabular}[t]{ll}
+      \l_tablines_tl
+    \end{tabular}
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 2.1 -- Solution 1 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\int_new:N \l_count_int
+\cs_new:Npn \acmd_fn:nn #1 #2
+  {
+    \int_set:Nn \l_tmpa_int { #1 }
+    \tl_set:Nn \l_tmpa_tl { #2 }
+    \int_set:Nn \l_tmpb_int
+      {
+        \tl_count:N \l_tmpa_tl
+      }
+    \int_compare:nTF { \l_tmpa_int <= \l_tmpb_int }
+      {
+        \int_zero:N \l_count_int
+        \tl_map_inline:Nn \l_tmpa_tl
+          {
+            \int_compare:nT { \l_count_int < \l_tmpa_int }
+              {
+                ##1
+              }
+            \int_incr:N \l_count_int
+          }
+      }
+      {
+        \int_zero:N \l_count_int
+        \int_while_do:nn { \l_count_int < \l_tmpa_int - \l_tmpb_int }
+          {
+            _
+            \int_incr:N \l_count_int
+          }
+        \l_tmpa_tl
+      }
+  }
+
+\NewDocumentCommand \acmd { m m }
+  {
+    \acmd_fn:nn { #1 } { #2 }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 2.2 -- Solution 1 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\cs_new:Npn \slicing_fn:nnn #1 #2 #3
+  {
+    \tl_set:Nn \l_tmpa_tl { #1 }
+    \int_zero:N \l_tmpa_int
+    \tl_map_inline:Nn \l_tmpa_tl
+      {
+        \int_incr:N \l_tmpa_int
+        \int_compare:nT { #2 <= \l_tmpa_int <= #3 }
+          {
+            ##1
+          }
+      }
+  }
+
+\NewDocumentCommand \myslicing { m m m }
+  {
+    \slicing_fn:nnn { #1 } { #2 } { #3 }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 2.3 -- Solution 1 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\int_new:N \l_first_int
+\int_new:N \l_second_int
+\cs_new:Npn \item_swap:nnnN #1 #2 #3 #4
+  {
+    \tl_new:N #4
+    \int_set:Nn \l_first_int { #2 }
+    \int_set:Nn \l_second_int { #3 }
+    \int_set:Nn \l_tmpa_int { \tl_count:n { #1 } }
+    \int_compare:nT { \l_first_int > \l_tmpa_int }
+      {
+        \int_set:Nn \l_first_int { \l_tmpa_int }
+      }
+    \int_compare:nT { \l_second_int > \l_tmpa_int }
+      {
+        \int_set:Nn \l_second_int { \l_tmpa_int }
+      }
+
+    \int_zero:N \l_tmpa_int
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \int_compare:nTF { \l_tmpa_int == \l_first_int }
+          {
+            \tl_set:Nn \l_tmpa_tl { ##1 }
+          }
+          {
+            \int_compare:nT { \l_tmpa_int == \l_second_int }
+              {
+                \tl_set:Nn \l_tmpb_tl { ##1 }
+              }
+          }
+      }
+
+
+    \int_zero:N \l_tmpa_int
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \int_compare:nTF { \l_tmpa_int == \l_first_int }
+          {
+            \tl_put_right:Nn #4 { \l_tmpb_tl }
+          }
+          {
+            \int_compare:nTF { \l_tmpa_int == \l_second_int }
+              {
+                \tl_put_right:Nn #4 { \l_tmpa_tl }
+              }
+              {
+                \tl_put_right:Nn #4 { ##1 }
+              }
+          }
+      }
+  }
+
+\NewDocumentCommand \myitemswap { m m m m }
+  {
+    \item_swap:nnnN { #1 } { #2 } { #3 } { #4 }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 3.1 -- Solution 1 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\cs_new:Npn \test_fn:n #1
+  {
+    \int_zero:N \l_tmpa_int
+    \int_set:Nn \l_tmpb_int
+      {
+        \tl_count:n { #1 }
+      }
+
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \int_compare:nTF { \int_mod:nn \l_tmpa_int 3 == 0 }
+          {
+            \int_compare:nTF { \l_tmpa_int == \l_tmpb_int }
+              {
+                ##1
+              }
+              {
+                ##1,~
+              }
+          }
+          {
+            ##1
+          }
+      }
+  }
+
+\NewDocumentCommand \test { m }
+  {
+    \test_fn:n { #1 }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 4 -- Solution 1 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NewDocumentCommand \newcmdmap { m }
+  {
+    \begin{enumerate}
+      \clist_set:Nn \l_tmpa_clist { #1 }
+      \clist_map_inline:Nn \l_tmpa_clist { \item ##1 }
+    \end{enumerate}
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 4 -- Solution 2 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\cs_new:Npn \newcmd_rec:n #1
+  {
+    \quark_if_recursion_tail_stop:n { #1 }
+    \tl_if_eq:nnTF { #1 } { , } { \item } { #1 }
+    \newcmd_rec:n
+  }
+
+\NewDocumentCommand \newcmdrec { m }
+  {
+    \begin{enumerate}
+      \item
+      \newcmd_rec:n #1 \q_recursion_tail \q_recursion_stop
+    \end{enumerate}
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 4 -- Solution 3 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\newcmdplain#1{
+  \begin{enumerate}
+    \item\expandafter\newcmda#1\end%
+  \end{enumerate}}
+
+\def\newcmda#1{\ifx#1\end\let\next\relax
+  \else\ifx#1,\item\let\next\newcmda
+  \else#1\let\next\newcmda\fi\fi\next}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 4.1 -- Solution 1 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\cs_new:Npn \newcmd_fn:n #1
+  {
+    \tl_clear:N \l_tmpa_tl
+    \int_zero:N \l_tmpa_int
+    \int_set:Nn \l_tmpb_int
+      {
+        \tl_count:n { #1 }
+      }
+
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \int_compare:nTF { \int_mod:nn \l_tmpa_int 3 == 0 }
+          {
+            \int_compare:nTF { \l_tmpa_int == \l_tmpb_int }
+              {
+                \tl_put_right:Nn \l_tmpa_tl { ##1 }
+              }
+              {
+                \tl_put_right:Nn \l_tmpa_tl { ##1,~ }
+              }
+          }
+          {
+            \tl_put_right:Nn \l_tmpa_tl { ##1 }
+          }
+      }
+
+    \clist_set:Nx \l_tmpa_clist { \l_tmpa_tl }
+    \int_zero:N \l_tmpa_int
+    \clist_map_inline:Nn \l_tmpa_clist
+      {
+        \int_incr:N \l_tmpa_int
+        \tl_set:cn { res \int_to_roman:n { \l_tmpa_int } } { ##1 }
+      }
+  }
+
+\NewDocumentCommand \newcmd { m }
+  {
+    \newcmd_fn:n { #1 }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 4.2 -- Solution 1 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\cs_new:Npn \testcmd_fn:n #1
+  {
+    \int_zero:N \l_tmpa_int
+    \int_set:Nn \l_tmpb_int { \tl_count:n { #1 } }
+    \tl_clear:N \l_tmpa_tl
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \int_compare:nTF { \l_tmpa_int < \l_tmpb_int }
+          {
+            \tl_put_right:Nn \l_tmpa_tl { ##1, }
+          }
+          {
+            \tl_put_right:Nn \l_tmpa_tl { ##1 }
+          }
+      }
+
+    \clist_set:Nx \l_tmpa_clist { \l_tmpa_tl }
+    \clist_sort:Nn \l_tmpa_clist
+      {
+        \int_compare:nTF { \pdftex_strcmp:D { ##1 } { ##2 } > 0 }
+          {
+            \sort_return_swapped:
+          }
+          {
+            \sort_return_same:
+          }
+      }
+
+    \tl_clear:N \l_tmpa_tl
+    \int_zero:N \l_tmpa_int
+    \int_zero:N \l_tmpb_int
+    \clist_map_inline:Nn \l_tmpa_clist
+      {
+        \int_incr:N \l_tmpa_int
+        \int_incr:N \l_tmpb_int
+        \int_compare:nT { \pdftex_strcmp:D { ##1 } { \l_tmpa_tl } > 0 }
+          {
+            \tl_if_empty:NF \l_tmpa_tl
+              {
+                \l_tmpa_tl {~=~}
+                \int_use:N \l_tmpa_int
+                ,~
+              }
+            \tl_set:Nn \l_tmpa_tl { ##1 }
+            \int_zero:N \l_tmpa_int
+          }
+        \int_compare:nT { \l_tmpb_int == \clist_count:N \l_tmpa_clist }
+          {
+            ##1 {~=~}
+            \int_incr:N \l_tmpa_int
+            \int_use:N \l_tmpa_int
+          }
+      }
+  }
+
+\NewDocumentCommand \testcmd { m }
+  {
+    \testcmd_fn:n { #1 }
+  }
+
 \ExplSyntaxOff
+
 
 \begin{document}
 
@@ -74,40 +701,639 @@
 
 \medskip
 
-\begin{tcolorbox}[title={문제 1},fonttitle=\sffamily\bfseries]
+%%%%%%%%%%%%%
+% Problem 1 %
+%%%%%%%%%%%%%
+\begin{questiona}{1}
   문자열 인자를 받아서 각 글자마다 \verb|\fbox|를 치는 명령 \verb|\foobox|를
   작성하여라.
 
   \tcblower
+  풀이 1. 처음의 \verb|\tl_head|와 \verb|\tl_tail|을 사용해 구현하려는 시도를
+  완성한 방법입니다.
+  매번 함수가 토큰열 전체를 읽은 후 한 글자씩 `떼어내어' 처리하는 방식입니다.
 
   \begin{verbatim}
 \ExplSyntaxOn
-\cs_new:Npn \foo_fn:o #1
+\cs_new:Npn \foo_fn_rec:x #1
   {
     \tl_set:Nx \l_tmpa_tl { #1 }
     \tl_if_empty:oF { \l_tmpa_tl }
       {
         \fbox { \tl_head:N \l_tmpa_tl }
-        \foo_fn:o { \tl_tail:N \l_tmpa_tl }
+        \foo_fn_rec:x { \tl_tail:N \l_tmpa_tl }
       }
   }
 
-\NewDocumentCommand \foobox { m }
+\NewDocumentCommand \fooboxrec { m }
   {
-    \foo_fn:o { #1 }
+    \foo_fn_rec:x { #1 }
   }
 \ExplSyntaxOff
   \end{verbatim}
 
   \begin{tcolorbox}{}
-    입력: \verb|\foobox{expl3}|\\
-    출력: \foobox{expl3}
+    입력: \verb|\fooboxrec{expl3}|\\
+    출력: \fooboxrec{expl3}
   \end{tcolorbox}
 
-\end{tcolorbox}
+  풀이 2. 이번 수업에서 배운 \verb|map|을 이용하여 구현한 방법입니다.
+
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \foo_fn_map:n #1
+  {
+    \tl_map_inline:nn { #1 }
+      {
+        \fbox { ##1 }
+      }
+  }
+
+\NewDocumentCommand \fooboxmap { m }
+  {
+    \foo_fn_map:n { #1 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\fooboxmap{expl3}|\\
+    출력: \fooboxmap{expl3}
+  \end{tcolorbox}
+  
+  풀이 3. 첫 시도와는 다르게 함수가 항상 토큰열의 한 문자씩 처리하지만, 특정
+  중단 지점을 만나면 함수가 자기자신을 다시 부르는 것을 중단하는 방식입니다.
+  이번 수업에서 `재미삼아' 알려주신 방법을 사용했습니다.
+
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \foo_fn_recq:n #1
+  {
+    \quark_if_recursion_tail_stop:n { #1 }
+    \fbox { #1 }
+    \foo_fn_recq:n
+  }
+
+\NewDocumentCommand \fooboxrecq { m }
+  {
+    \foo_fn_recq:n #1 \q_recursion_tail \q_recursion_stop
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\fooboxrecq{expl3}|\\
+    출력: \fooboxrecq{expl3}
+  \end{tcolorbox}
+\end{questiona}
+
+%%%%%%%%%%%%%%%%
+% Practice 1.1 %
+%%%%%%%%%%%%%%%%
+\begin{questionp}{1. 기본 1}
+  문제에서 제시한 \verb|\foobox|에서 각 글자에 아래 예시와 같이 색상을
+  입혀보아라.
+  각 글자 사이에 1pt의 간격을 둔다.
+
+  \tcblower
+
+  풀이 1.
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \colorfoo_fn_rec:x #1
+  {
+    \tl_set:Nx \l_tmpa_tl { #1 }
+    \tl_if_empty:oF { \l_tmpa_tl }
+      {
+        \fcolorbox{red}{red}{\color{yellow} \tl_head:N \l_tmpa_tl }
+        \tl_set:Nx \l_tmpb_tl { \tl_tail:N \l_tmpa_tl }
+
+        \tl_if_empty:oF { \l_tmpb_tl }
+          {
+            \hspace{1pt}
+            \colorfoo_fn_rec:x { \tl_tail:N \l_tmpa_tl }
+          }
+      }
+  }
+
+\NewDocumentCommand \colorfooboxrec { m }
+  {
+    \colorfoo_fn_rec:x { #1 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\colorfooboxrec{expl3}|\\
+    출력: \colorfooboxrec{expl3}
+  \end{tcolorbox}
+
+  풀이 2.
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \colorfoo_fn_map:n #1
+  {
+    \tl_map_inline:nn { #1 }
+      {
+        \fcolorbox{red}{red}{\color{yellow} ##1 }
+        \hspace{1pt}
+      }
+      \hspace{-1pt}
+  }
+
+\NewDocumentCommand \colorfooboxmap { m }
+  {
+    \colorfoo_fn_map:n { #1 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\colorfooboxmap{expl3}|\\
+    출력: \colorfooboxmap{expl3}
+  \end{tcolorbox}
+
+  풀이 3.
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \colorfoo_fn_recq:n #1
+  {
+    \quark_if_recursion_tail_stop_do:nn { #1 }
+      {
+        \hspace{-1pt}
+      }
+    \fcolorbox{red}{red}{\color{yellow} #1 }
+    \hspace{1pt}
+    \colorfoo_fn_recq:n
+  }
+
+\NewDocumentCommand \colorfooboxrecq { m }
+  {
+    \colorfoo_fn_recq:n #1 \q_recursion_tail \q_recursion_stop
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\colorfooboxrecq{expl3}|\\
+    출력: \colorfooboxrecq{expl3}
+  \end{tcolorbox}
+\end{questionp}
+
+%%%%%%%%%%%%%%%%
+% Practice 1.2 %
+%%%%%%%%%%%%%%%%
+\begin{questionp}{1. 기본 2}
+  \verb|\foobox|에서 인자로 주어진 글자 수를 세어서 마지막에 괄호와 함께
+  표현하는 명령 \verb|\barbox|를 작성하여라.
+
+  \tcblower
+
+  풀이 1.
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \bar_fn_rec:xn #1 #2
+  {
+    \tl_set:Nx \l_tmpa_tl { #1 }
+    \int_set:Nn \l_tmpa_int { #2 }
+    \tl_if_empty:oF { \l_tmpa_tl }
+      {
+        \fcolorbox{red}{red}{\color{yellow} \tl_head:N \l_tmpa_tl }
+        \tl_set:Nx \l_tmpb_tl { \tl_tail:N \l_tmpa_tl }
+
+        \tl_if_empty:oTF { \l_tmpb_tl }
+          {
+            {~}( \int_use:N \l_tmpa_int )
+          }
+          {
+            \hspace{1pt}
+            \int_incr:N \l_tmpa_int
+            \bar_fn_rec:xn { \l_tmpb_tl } { \l_tmpa_int }
+          }
+      }
+  }
+
+\NewDocumentCommand \barboxrec { m }
+  {
+    \bar_fn_rec:xn { #1 } { 1 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\barboxrec{expl3}|\\
+    출력: \barboxrec{expl3}
+  \end{tcolorbox}
+
+  풀이 2.
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \bar_fn_map:n #1
+  {
+    \int_zero:N \l_tmpa_int
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \fcolorbox{red}{red}{\color{yellow} ##1 }
+        \hspace{1pt}
+      }
+      \hspace{-1pt}
+      {~}( \int_use:N \l_tmpa_int )
+  }
+
+\NewDocumentCommand \barboxmap { m }
+  {
+    \bar_fn_map:n { #1 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\barboxmap{expl3}|\\
+    출력: \barboxmap{expl3}
+  \end{tcolorbox}
+
+  풀이 3.
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \bar_fn_recq:n #1
+  {
+    \quark_if_recursion_tail_stop_do:nn { #1 }
+      {
+        \hspace{-1pt}
+        {~}( \int_use:N \l_tmpa_int )
+      }
+    \int_incr:N \l_tmpa_int
+    \fcolorbox{red}{red}{\color{yellow} #1 }
+    \hspace{1pt}
+    \bar_fn_recq:n
+  }
+
+\NewDocumentCommand \barboxrecq { m }
+  {
+    \int_zero:N \l_tmpa_int
+    \bar_fn_recq:n #1 \q_recursion_tail \q_recursion_stop
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\barboxrecq{expl3}|\\
+    출력: \barboxrecq{expl3}
+  \end{tcolorbox}
+\end{questionp}
+
+%%%%%%%%%%%%%%%%
+% Practice 1.3 %
+%%%%%%%%%%%%%%%%
+\begin{questionp}{1. 발전 3}
+  \verb|\foobox|에서 인자로 주어진 글자 수를 세어서 마지막에 괄호와 함께
+  표현하는 명령 \verb|\barbox|를 작성하여라.
+
+  \tcblower
+
+  풀이 1.
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \oddbar_fn_rec:xn #1 #2
+  {
+    \tl_set:Nx \l_tmpa_tl { #1 }
+    \int_set:Nn \l_tmpa_int { #2 }
+    \tl_if_empty:oF { \l_tmpa_tl }
+      {
+        \int_if_odd:nTF \l_tmpa_int
+        {
+          \fcolorbox{red}{red}{\color{yellow} \tl_head:N \l_tmpa_tl }
+        }
+        {
+          \tl_head:N \l_tmpa_tl
+        }
+        \tl_set:Nx \l_tmpb_tl { \tl_tail:N \l_tmpa_tl }
+
+        \tl_if_empty:oTF { \l_tmpb_tl }
+          {
+            {~}( \int_use:N \l_tmpa_int )
+          }
+          {
+            \hspace{1pt}
+            \int_incr:N \l_tmpa_int
+            \oddbar_fn_rec:xn { \l_tmpb_tl } { \l_tmpa_int }
+          }
+      }
+  }
+
+\NewDocumentCommand \oddbarboxrec { m }
+  {
+    \oddbar_fn_rec:xn { #1 } { 1 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\oddbarboxrec{expl3}|\\
+    출력: \oddbarboxrec{expl3}
+  \end{tcolorbox}
+
+  풀이 2.
+  
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \oddbar_fn_map:n #1
+  {
+    \int_zero:N \l_tmpa_int
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \int_if_odd:nTF \l_tmpa_int
+        {
+          \fcolorbox{red}{red}{\color{yellow} ##1 }
+        }
+        {
+          ##1
+        }
+        \hspace{1pt}
+      }
+      \hspace{-1pt}
+      {~}( \int_use:N \l_tmpa_int )
+  }
+
+\NewDocumentCommand \oddbarboxmap { m }
+  {
+    \oddbar_fn_map:n { #1 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\oddbarboxmap{expl3}|\\
+    출력: \oddbarboxmap{expl3}
+  \end{tcolorbox}
+
+  풀이 3.
+  
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \oddbar_fn_recq:n #1
+  {
+    \quark_if_recursion_tail_stop_do:nn { #1 }
+      {
+        \hspace{-1pt}
+        {~}( \int_use:N \l_tmpa_int )
+      }
+    \int_incr:N \l_tmpa_int
+    \int_if_odd:nTF \l_tmpa_int
+    {
+      \fcolorbox{red}{red}{\color{yellow} #1 }
+    }
+    {
+      #1
+    }
+    \hspace{1pt}
+    \oddbar_fn_recq:n
+  }
+
+\NewDocumentCommand \oddbarboxrecq { m }
+  {
+    \int_zero:N \l_tmpa_int
+    \oddbar_fn_recq:n #1 \q_recursion_tail \q_recursion_stop
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\oddbarboxrecq{expl3}|\\
+    출력: \oddbarboxrecq{expl3}
+  \end{tcolorbox}
+
+\end{questionp}
 
 
-\begin{tcolorbox}[title={문제 3},fonttitle=\sffamily\bfseries]
+\begin{questiona}{2}
+  주어지는 문자열을 3개 단위로 끊어서 다음 출력예와 같이 배열하여라.
+  마지막 항목은 3개가 되지 않을 수 있으며 스페이스는 무시한다.
+
+  \tcblower
+
+  재귀를 이용한 방법입니다.
+  \begin{verbatim}
+\ExplSyntaxOn
+\tl_new:N \l_tablines_tl
+\cs_new:Npn \scmd_fn_rec:n #1
+  {
+    \quark_if_recursion_tail_stop:n { #1 }
+
+    \int_incr:N \l_tmpa_int
+    \tl_set:Nn \l_tmpa_tl { #1 }
+    \int_compare:nT { \int_mod:nn \l_tmpa_int 3 == 0 }
+      {
+        \int_compare:nTF { \int_mod:nn \l_tmpa_int 6 == 0 }
+          {
+            \tl_put_right:Nn \l_tmpa_tl { \tabularnewline }
+          }
+          {
+            \tl_put_right:Nn \l_tmpa_tl { \c_alignment_token }
+          }
+      }
+    \tl_put_right:Nx \l_tablines_tl { \l_tmpa_tl }
+    \scmd_fn_rec:n
+  }
+
+\NewDocumentCommand \scmdrec { m }
+  {
+    \tl_clear:N \l_tablines_tl
+    \int_zero:N \l_tmpa_int
+    \scmd_fn_rec:n #1 \q_recursion_tail \q_recursion_stop
+    \begin{tabular}[t]{ll}
+      \l_tablines_tl
+    \end{tabular}
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+  \begin{tcolorbox}{}
+    입력: \verb|\scmdrec{abcdefg hijklmn}|\\
+    출력: \scmdrec{abcdefg hijklmn}
+  \end{tcolorbox}
+
+\end{questiona}
+
+
+\begin{questionp}{2. 기본 1}
+  명령 \verb|\acmd|는 두 개의 인자를 받는다.
+  첫 번째 인자는 임의의 문자열이다.
+  만약 문자열이 지정된 숫자보다 크다면 앞에서부터 숫자에 해당되는 번째
+  문자까지만 출력하라.
+  만약 문자열이 지정된 숫자보다 작다면 문자열의 앞쪽에 \verb|_|(언더스코어)를
+  붙여 $n$개의 문자열이 되도록 하라.
+
+  \tcblower
+
+  \verb|_|를 모자란 개수만큼 출력하기 위하여 \verb|\int_while_do:nn|을
+  사용하였습니다.
+
+  \begin{verbatim}
+\ExplSyntaxOn
+\int_new:N \l_count_int
+\cs_new:Npn \acmd_fn:nn #1 #2
+  {
+    \int_set:Nn \l_tmpa_int { #1 }
+    \tl_set:Nn \l_tmpa_tl { #2 }
+    \int_set:Nn \l_tmpb_int
+      {
+        \tl_count:N \l_tmpa_tl
+      }
+    \int_compare:nTF { \l_tmpa_int <= \l_tmpb_int }
+      {
+        \int_zero:N \l_count_int
+        \tl_map_inline:Nn \l_tmpa_tl
+          {
+            \int_compare:nT { \l_count_int < \l_tmpa_int }
+              {
+                ##1
+              }
+            \int_incr:N \l_count_int
+          }
+      }
+      {
+        \int_zero:N \l_count_int
+        \int_while_do:nn { \l_count_int < \l_tmpa_int - \l_tmpb_int }
+          {
+            _
+            \int_incr:N \l_count_int
+          }
+        \l_tmpa_tl
+      }
+  }
+
+\NewDocumentCommand \acmd { m m }
+  {
+    \acmd_fn:nn { #1 } { #2 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\acmd{5}{beautiful}\quad \acmd{5}{abc}|\\
+    출력: \acmd{5}{beautiful}\quad \acmd{5}{abc}
+  \end{tcolorbox}
+\end{questionp}
+
+
+\begin{questionp}{2. 발전 2}
+  Python에는 문자열을 자르는(슬라이싱) 재미있는 기법이 있다.
+  \verb|\myslicing| 명령을 정의하되, 3개의 인자를 받아들이도록 하여 첫 인자로
+  주어지는 문자열을 \verb|#2|부터 \verb|#3|까지 슬라이싱하여 (즉
+  \texttt{mystring[$m$:$n$]}과 비슷) 출력하도록 하여라.
+  스페이스는 무시한다.
+
+  \tcblower
+
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \slicing_fn:nnn #1 #2 #3
+  {
+    \tl_set:Nn \l_tmpa_tl { #1 }
+    \int_zero:N \l_tmpa_int
+    \tl_map_inline:Nn \l_tmpa_tl
+      {
+        \int_incr:N \l_tmpa_int
+        \int_compare:nT { #2 <= \l_tmpa_int <= #3 }
+          {
+            ##1
+          }
+      }
+  }
+
+\NewDocumentCommand \myslicing { m m m }
+  {
+    \slicing_fn:nnn { #1 } { #2 } { #3 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\myslicing{Hello world}{3}{7}|\\
+    출력: \myslicing{Hello world}{3}{7}
+  \end{tcolorbox}
+\end{questionp}
+
+
+\begin{questionp}{2. 발전 3}
+  두 번째 혹은 세 번째 인자의 크기가 주어진 첫 번째 인자의 길이보다 크다면,
+  마지막 값으로 처리합니다.
+  두 번째 혹은 세 번째 인자가 양의 정수가 아닌 경우는 고려하지 않았습니다.
+
+  \tcblower
+
+  \begin{verbatim}
+\ExplSyntaxOn
+\int_new:N \l_first_int
+\int_new:N \l_second_int
+\cs_new:Npn \item_swap:nnnN #1 #2 #3 #4
+  {
+    \tl_new:N #4
+    \int_set:Nn \l_first_int { #2 }
+    \int_set:Nn \l_second_int { #3 }
+    \int_set:Nn \l_tmpa_int { \tl_count:n { #1 } }
+    \int_compare:nT { \l_first_int > \l_tmpa_int }
+      {
+        \int_set:Nn \l_first_int { \l_tmpa_int }
+      }
+    \int_compare:nT { \l_second_int > \l_tmpa_int }
+      {
+        \int_set:Nn \l_second_int { \l_tmpa_int }
+      }
+
+    \int_zero:N \l_tmpa_int
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \int_compare:nTF { \l_tmpa_int == \l_first_int }
+          {
+            \tl_set:Nn \l_tmpa_tl { ##1 }
+          }
+          {
+            \int_compare:nT { \l_tmpa_int == \l_second_int }
+              {
+                \tl_set:Nn \l_tmpb_tl { ##1 }
+              }
+          }
+      }
+
+
+    \int_zero:N \l_tmpa_int
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \int_compare:nTF { \l_tmpa_int == \l_first_int }
+          {
+            \tl_put_right:Nn #4 { \l_tmpb_tl }
+          }
+          {
+            \int_compare:nTF { \l_tmpa_int == \l_second_int }
+              {
+                \tl_put_right:Nn #4 { \l_tmpa_tl }
+              }
+              {
+                \tl_put_right:Nn #4 { ##1 }
+              }
+          }
+      }
+  }
+
+\NewDocumentCommand \myitemswap { m m m m }
+  {
+    \item_swap:nnnN { #1 } { #2 } { #3 } { #4 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\myitemswap{abcde}{2}{4}{\myresult}\myresult|\\
+    출력: \myitemswap{abcde}{2}{4}{\myresult}\myresult
+  \end{tcolorbox}
+\end{questionp}
+
+\begin{questiona}{3}
   다음 실행의 결과가 어떠할지 예측해보아라.
   실제로 예상과 같은지 확인해보아라.
 
@@ -132,6 +1358,265 @@
     출력: barfoo
   \end{tcolorbox}
 
-\end{tcolorbox}
+\end{questiona}
+
+
+\begin{questionp}{3. 기본 1}
+  주어지는 문자열을 앞에서부터 3개째마다 쉼표를 추가하는 명령을 작성하여라.
+
+  \tcblower
+
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \test_fn:n #1
+  {
+    \int_zero:N \l_tmpa_int
+    \int_set:Nn \l_tmpb_int
+      {
+        \tl_count:n { #1 }
+      }
+
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \int_compare:nTF { \int_mod:nn \l_tmpa_int 3 == 0 }
+          {
+            \int_compare:nTF { \l_tmpa_int == \l_tmpb_int }
+              {
+                ##1
+              }
+              {
+                ##1,~
+              }
+          }
+          {
+            ##1
+          }
+      }
+  }
+
+\NewDocumentCommand \test { m }
+  {
+    \test_fn:n { #1 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\test{this is just a test}|\\
+    출력: \test{this is just a test}
+  \end{tcolorbox}
+\end{questionp}
+
+
+\begin{questiona}{4}
+  새로운 명령 \verb|newcmd|는 다음과 같은 형식으로 실행한다.
+  \verb|\newcmd{abc, de, fgh, i, jkl}|
+  쉼표로 분리된 각 항목을 enumerate으로 배열하여라.
+
+  \tcblower
+
+  \href{http://www.ktug.org/xe/index.php?document_srl=236820&mid=KTUG_QnA_board}
+  {KTUG QnA:236820}에 \texttt{Zeta} 필명으로 답변 작성하였습니다.\\
+
+  풀이 1.
+  \begin{verbatim}
+\ExplSyntaxOn
+\NewDocumentCommand \newcmdmap { m }
+  {
+    \begin{enumerate}
+      \clist_set:Nn \l_tmpa_clist { #1 }
+      \clist_map_inline:Nn \l_tmpa_clist { \item ##1 }
+    \end{enumerate}
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\newcmdmap{abc, de, fgh, i, jkl}|\\
+    출력: \newcmdmap{abc, de, fgh, i, jkl}
+  \end{tcolorbox}
+
+
+  풀이 2.
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \newcmd_rec:n #1
+  {
+    \quark_if_recursion_tail_stop:n { #1 }
+    \tl_if_eq:nnTF { #1 } { , } { \item } { #1 }
+    \newcmd_rec:n
+  }
+\ExplSyntaxOff
+
+\NewDocumentCommand \newcmdrec { m }
+  {
+    \begin{enumerate}
+      \item
+      \newcmd_rec:n #1 \q_recursion_tail \q_recursion_stop
+    \end{enumerate}
+  }
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\newcmdrec{abc, de, fgh, i, jkl}|\\
+    출력: \newcmdrec{abc, de, fgh, i, jkl}
+  \end{tcolorbox}
+
+
+  덤으로 plain\TeX{}을 사용한 풀이 3.
+  \begin{verbatim}
+\def\newcmdplain#1{
+  \begin{enumerate}
+    \item\expandafter\newcmda#1\end%
+  \end{enumerate}}
+
+\def\newcmda#1{\ifx#1\end\let\next\relax
+  \else\ifx#1,\item\let\next\newcmda
+  \else#1\let\next\newcmda\fi\fi\next}
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\newcmdplain{abc, de, fgh, i, jkl}|\\
+    출력: \newcmdplain{abc, de, fgh, i, jkl}
+  \end{tcolorbox}
+\end{questiona}
+
+
+\begin{questionp}{4. 기본 1}
+  새로운 명령 \verb|\newcmd|는 다음과 같은 형식으로 실행한다.
+  \verb|\newcmd{this is just a test}|
+  주어지는 인자를 먼저 세 개마다 쉼표를 붙여 분리하고, 분리된 각 단어를
+  \verb|resi|, \verb|resii|, \verb|resiii|, \verb|resiv|, $\ldots$에 넣어
+  반환하라.
+
+  \tcblower
+
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \newcmd_fn:n #1
+  {
+    \tl_clear:N \l_tmpa_tl
+    \int_zero:N \l_tmpa_int
+    \int_set:Nn \l_tmpb_int
+      {
+        \tl_count:n { #1 }
+      }
+
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \int_compare:nTF { \int_mod:nn \l_tmpa_int 3 == 0 }
+          {
+            \int_compare:nTF { \l_tmpa_int == \l_tmpb_int }
+              {
+                \tl_put_right:Nn \l_tmpa_tl { ##1 }
+              }
+              {
+                \tl_put_right:Nn \l_tmpa_tl { ##1,~ }
+              }
+          }
+          {
+            \tl_put_right:Nn \l_tmpa_tl { ##1 }
+          }
+      }
+
+    \clist_set:Nx \l_tmpa_clist { \l_tmpa_tl }
+    \int_zero:N \l_tmpa_int
+    \clist_map_inline:Nn \l_tmpa_clist
+      {
+        \int_incr:N \l_tmpa_int
+        \tl_set:cn { res \int_to_roman:n { \l_tmpa_int } } { ##1 }
+      }
+  }
+
+\NewDocumentCommand \newcmd { m }
+  {
+    \newcmd_fn:n { #1 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+  \begin{tcolorbox}{}
+    입력: \verb|\newcmd{this is just a test}\resi, \resiv|\\
+    출력: \newcmd{this is just a test}\resi, \resiv
+  \end{tcolorbox}
+\end{questionp}
+
+\begin{questionp}{4. 발전 2}
+  인자로 주어지는 단어의 각 문자가 몇 번씩 사용되었는지를 예시와 같이
+  출력하여라.
+
+  \tcblower
+
+  \begin{verbatim}
+\ExplSyntaxOn
+\cs_new:Npn \testcmd_fn:n #1
+  {
+    \int_zero:N \l_tmpa_int
+    \int_set:Nn \l_tmpb_int { \tl_count:n { #1 } }
+    \tl_clear:N \l_tmpa_tl
+    \tl_map_inline:nn { #1 }
+      {
+        \int_incr:N \l_tmpa_int
+        \int_compare:nTF { \l_tmpa_int < \l_tmpb_int }
+          {
+            \tl_put_right:Nn \l_tmpa_tl { ##1, }
+          }
+          {
+            \tl_put_right:Nn \l_tmpa_tl { ##1 }
+          }
+      }
+
+    \clist_set:Nx \l_tmpa_clist { \l_tmpa_tl }
+    \clist_sort:Nn \l_tmpa_clist
+      {
+        \int_compare:nTF { \pdftex_strcmp:D { ##1 } { ##2 } > 0 }
+          {
+            \sort_return_swapped:
+          }
+          {
+            \sort_return_same:
+          }
+      }
+
+    \tl_clear:N \l_tmpa_tl
+    \int_zero:N \l_tmpa_int
+    \int_zero:N \l_tmpb_int
+    \clist_map_inline:Nn \l_tmpa_clist
+      {
+        \int_incr:N \l_tmpa_int
+        \int_incr:N \l_tmpb_int
+        \int_compare:nT { \pdftex_strcmp:D { ##1 } { \l_tmpa_tl } > 0 }
+          {
+            \tl_if_empty:NF \l_tmpa_tl
+              {
+                \l_tmpa_tl {~=~}
+                \int_use:N \l_tmpa_int
+                ,~
+              }
+            \tl_set:Nn \l_tmpa_tl { ##1 }
+            \int_zero:N \l_tmpa_int
+          }
+        \int_compare:nT { \l_tmpb_int == \clist_count:N \l_tmpa_clist }
+          {
+            ##1 {~=~}
+            \int_incr:N \l_tmpa_int
+            \int_use:N \l_tmpa_int
+          }
+      }
+  }
+
+\NewDocumentCommand \testcmd { m }
+  {
+    \testcmd_fn:n { #1 }
+  }
+\ExplSyntaxOff
+  \end{verbatim}
+
+  \begin{tcolorbox}{}
+    입력: \verb|\testcmd{abaracadabra}|\\
+    출력: \testcmd{abaracadabra}
+  \end{tcolorbox}
+\end{questionp}
 
 \end{document}
