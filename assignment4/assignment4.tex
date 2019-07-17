@@ -7,6 +7,9 @@
 \let\ATonum\@onum
 \makeatother
 
+\usepackage{esgutil}
+
+
 \usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{hologo}
@@ -60,51 +63,51 @@
 
 \NewDocumentCommand \exverb { d|| }
 {
-	\texttt { \tl_to_str:n { #1 } }
+    \texttt { \tl_to_str:n { #1 } }
 }
 
 \ExplSyntaxOff 
 
 \NewDocumentEnvironment {questiona} { m }
 {
-%	\medskip
-	\begin{tcolorbox}[title={#1},fonttitle={\sffamily\bfseries}]
+%    \medskip
+    \begin{tcolorbox}[title={#1},fonttitle={\sffamily\bfseries}]
 }{%
-	\end{tcolorbox}
+    \end{tcolorbox}
 }
 
 \NewDocumentEnvironment {questionp} { }
 {
-%	\medskip
-	\begin{tcolorbox}[colframe=orange!30!black!60,colbacktitle=orange!25!gray,
-	title={연습문제},fonttitle={\sffamily\bfseries}]
+%    \medskip
+    \begin{tcolorbox}[colframe=orange!30!black!60,colbacktitle=orange!25!gray,
+    title={연습문제},fonttitle={\sffamily\bfseries}]
 }{%
-	\end{tcolorbox}
+    \end{tcolorbox}
 }
 
 
 \NewDocumentEnvironment {exampleonly} {}
 {%
-%	\begin{tcblisting}{listing only}
-	\expandafter\tcblisting{listing only,breakable,before={\par\medskip\setstretch{1}}}
+%    \begin{tcblisting}{listing only}
+    \expandafter\tcblisting{listing only,breakable,before={\par\medskip\setstretch{1}}}
 }{
-	\endtcblisting
-%	\end{tcblisting}
+    \endtcblisting
+%    \end{tcblisting}
 }
 
 \NewDocumentEnvironment {exampleside} {}
 {%
-	\tcblisting{listing side text,breakable,before={\par\medskip\setstretch{1}}}%
+    \tcblisting{listing side text,breakable,before={\par\medskip\setstretch{1}}}%
 }{%
-	\endtcblisting
+    \endtcblisting
 }
 
 %\NewDocumentEnvironment {examplebelow} {}
 %{%
-%	\medskip
-%	\tcblisting{text below listing,breakable}%
+%    \medskip
+%    \tcblisting{text below listing,breakable}%
 %}{%
-%	\endtcblisting
+%    \endtcblisting
 %}
 \newtcblisting{examplebelow}{breakable,before={\par\medskip\setstretch{1}}}
 
@@ -482,6 +485,51 @@ b~:~\clist_use:Nn \l_tmpb_clist { , ~ }
 
 \end{examplebelow}
 
+어찌 됐든 답을 구할 수는 있었지만 이 방법은 다음 두 가지 때문에 좋은 해결책이 못 된다.
+(1) clist에 넣을 수 있는 아이템의 개수에 제한이 있다.
+(2) clist 또는 seq에 정수를 입력하는 것이 효율적이지 못하다. 구하려는 수가 커지면 clist 입출력에 너무 많은 시간이 소요된다.
+
+만약 \verb|\int_step_...|을 중간에 중단할 수 있는 break 명령이 있다면 어떻게 할 수 있을까?
+
+\begin{examplebelow}
+\ExplSyntaxOn
+
+\cs_new:Npn \step_fn_prime:n #1
+{
+    \bool_gset_true:N \g_tmpa_bool
+    \int_step_inline:nnn {2} { \fp_eval:n { floor ( sqrt ( #1 ) ) } }
+    {
+        \int_compare:nT { \int_mod:nn { #1 } { ##1 } == 0 }
+        {
+            \bool_gset_false:N \g_tmpa_bool
+            \esg_int_step_break:
+        }
+    }
+    
+    \bool_if:NT \g_tmpa_bool
+    {
+        \clist_gput_right:Nn \g_tmpa_clist { #1 }
+    }
+}
+
+\cs_new:Npn \fn_new_primes:n #1
+{
+    \clist_gclear:N \g_tmpa_clist
+    
+    \int_step_function:nnN {2} { #1 } \step_fn_prime:n
+    
+    \clist_use:Nn \g_tmpa_clist { ,~ }
+}
+
+\fn_new_primes:n { 25 }
+
+\ExplSyntaxOff
+\end{examplebelow}
+
+이것은 처음에 제시한 python 코드를 거의 그대로 옮긴 것이다. \verb|\esg_int_step_break:|
+명령은 따로 준비하였다.
+
+
 \vfill
 
 \begin{questionp}
@@ -534,6 +582,31 @@ b~:~\clist_use:Nn \l_tmpb_clist { , ~ }
 
 먼저, 1부터 10까지 정수의 상용로그 값을 도표로 작성해보자.
 
+\begin{exampleside}
+\ExplSyntaxOn
+\int_step_inline:nn { 10 }
+{
+    #1:~\fp_eval:n { ln ( #1 ) / ln ( 10 ) } \par
+}
+\ExplSyntaxOff
+\end{exampleside}
+
+소수 네째자리까지만 표현하고 싶어서 \verb|round| 함수를 써보면 다음처럼 된다.
+\verb|round (0.30102999, 4)|와 같이 round할 위치를 \verb|,4|로 이어 지시해야 하는 것에 주의한다.
+
+\begin{exampleside}
+\ExplSyntaxOn
+\int_step_inline:nn { 10 }
+{
+    #1:~\fp_eval:n { round ( ln ( #1 ) / ln ( 10 ) , 4) } \par
+}
+\ExplSyntaxOff
+\end{exampleside}
+
+반올림은 원하는 자리에서 잘 일어났는데 수의 표현이 가지런하지 않다. 그 이유는 fp 표현식이 끝자리 0를 모두 제거하기 때문이다.
+
+그래서 \verb|\format_num:n| 함수를 하나 정의하였다. 이것은 들어오는 소수의 길이를 6자리로 보고 필요한 0를 채워넣은 것이다. 
+
 \begin{examplebelow}
 \ExplSyntaxOn
 
@@ -558,6 +631,19 @@ b~:~\clist_use:Nn \l_tmpb_clist { , ~ }
 
 \cs_generate_variant:Nn \format_num:n { V, x }
 
+\format_num:n { 2.1 }
+\ExplSyntaxOff
+
+\end{examplebelow}
+
+현재 정의한 \verb|\format_num:n|은 일반적인 용도에 쓸 수 없다. 왜냐하면 정수 부분이 단 한 자리인 소수만을 표현할 수 있고 소수 부분은 무조건 4자리로 맞추고 있기 때문이다. 
+
+예컨대 \verb|\formatnum[3]{123.1}|과 같이 입력하면 \verb|123.100|으로 표현해주는 함수를 정의하는 것은 스스로 해보는 즐거움을 위하여 미루어두겠다.
+
+1에서 10까지의 상용로그를 소수 네째자리까지 표현하는 데는 이것으로 가능하니까 여기서는 그냥 쓰도록 하였다.
+
+\begin{examplebelow}
+\ExplSyntaxOn
 \cs_new:Npn \print_log_value:n #1
 {
     \ensuremath{#1} \c_alignment_token
@@ -653,7 +739,7 @@ $x$ & $y$ \\ \hline
 \cs_set:Npn \my_point:n #1 { (#1,\int_eval:n { #1+1 } ) }
 \tl_set:Nx \l_tmpb_tl { (0,0) -- \my_point:n { 2 } }
 \begin{tikzpicture}
-\exp_last_unbraced:Noo \draw \l_tmpa_tl \l_tmpb_tl ;
+\exp_last_unbraced:NNx \draw \l_tmpa_tl \l_tmpb_tl ;
 \end{tikzpicture}
 \ExplSyntaxOff
 \end{examplebelow}
