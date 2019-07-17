@@ -1,0 +1,274 @@
+\documentclass[a4paper,amsmath]{oblivoir}
+
+\usepackage{fapapersize}
+\usefapapersize{*,*,1in,*,1in,*}
+
+\makeatletter
+\let\ATonum\@onum
+\makeatother
+
+\usepackage{esgutil}
+
+
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{hologo}
+\usepackage{relsize}
+\usepackage{tcolorbox}
+\tcbuselibrary{listings,breakable}
+\tcbset{listing engine=listings,colframe=cyan,colback=cyan!5!white}
+
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{Noto Sans}
+\setmonofont{Noto Sans Mono}
+\setkomainfont(Noto Serif CJK KR)(* Bold)(Noto Sans CJK KR)
+\setkosansfont[Noto Sans CJK KR]()( Bold)( Medium)
+\usepackage{unicode-math}
+\setmathfont{texgyrepagella-math.otf}
+
+\newcounter{sub}
+\newcommand\bangotsuite{\stepcounter{sub}\thesub}
+
+\usepackage{tikz}
+\newcommand\tikzlogo{Ti\textit{k}Z}
+
+\setlength{\parindent}{0mm}
+
+\newcommand\pkg[1]{\textsf{#1}}
+
+\ExplSyntaxOn 
+
+\NewDocumentEnvironment {intro} {o}
+{
+    \IfValueTF { #1 }
+    {
+        \int_set:Nn \l_tmpa_int { #1 }
+    }
+    {
+        \int_set:Nn \l_tmpa_int { 1 }
+    }
+    \noindent \rule {\linewidth}{3pt}
+    \par 
+    \sffamily [No.\space\int_use:N \l_tmpa_int ]\ \ 
+    \bfseries
+}
+{
+    \hfill 2019년~07월~17일
+    \par 
+    \vskip -.3\baselineskip 
+    \noindent \rule {\linewidth }{1pt}
+    \par 
+    \vskip .5\baselineskip 
+}
+
+\NewDocumentCommand \exverb { d|| }
+{
+    \texttt { \tl_to_str:n { #1 } }
+}
+
+\ExplSyntaxOff 
+
+\NewDocumentEnvironment {questiona} { m }
+{
+%    \medskip
+    \begin{tcolorbox}[title={#1},fonttitle={\sffamily\bfseries}]
+}{%
+    \end{tcolorbox}
+}
+
+\NewDocumentEnvironment {questionp} { }
+{
+%    \medskip
+    \begin{tcolorbox}[colframe=orange!30!black!60,colbacktitle=orange!25!gray,
+    title={연습문제},fonttitle={\sffamily\bfseries}]
+}{%
+    \end{tcolorbox}
+}
+
+
+\NewDocumentEnvironment {exampleonly} {}
+{%
+%    \begin{tcblisting}{listing only}
+    \expandafter\tcblisting{listing only,breakable,before={\par\medskip\setstretch{1}}}
+}{
+    \endtcblisting
+%    \end{tcblisting}
+}
+
+\NewDocumentEnvironment {exampleside} {}
+{%
+    \tcblisting{listing side text,breakable,before={\par\medskip\setstretch{1}}}%
+}{%
+    \endtcblisting
+}
+
+%\NewDocumentEnvironment {examplebelow} {}
+%{%
+%    \medskip
+%    \tcblisting{text below listing,breakable}%
+%}{%
+%    \endtcblisting
+%}
+\newtcblisting{examplebelow}{breakable,before={\par\medskip\setstretch{1}}}
+
+\begin{document}
+
+\begin{intro}[4]
+Flame of Passion
+\end{intro}
+
+이재호 풀이.
+\medskip
+
+기본 1.
+
+\begin{examplebelow}
+\ExplSyntaxOn
+
+\cs_new:Npn \step_fn_prime:n #1
+  {
+    \int_set:Nn \l_tmpa_int { 2 }
+
+    \bool_set_true:N \l_tmpa_bool
+    \bool_while_do:Nn \l_tmpa_bool
+      {
+        \bool_set:Nn \l_tmpb_bool
+          {
+            \int_compare_p:n
+              {
+                \int_mod:nn { #1 } { \l_tmpa_int } != 0
+              }
+          }
+        \bool_set:Nn \l_tmpa_bool
+          {
+            \l_tmpb_bool &&
+            \int_compare_p:n
+              {
+                \l_tmpa_int <= \fp_eval:n { floor ( sqrt ( #1 ) ) }
+              }
+          }
+        \int_incr:N \l_tmpa_int
+      }
+
+    \bool_if:nT
+      {
+        \l_tmpb_bool || \int_compare_p:n { #1 == 2 }
+      }
+      {
+        \clist_gput_right:Nn \g_tmpa_clist { #1 }
+      }
+  }
+
+\cs_new:Npn \fn_primes:n #1
+  {
+    \clist_gclear:N \g_tmpa_clist
+    \int_step_function:nnN { 2 } { #1 } \step_fn_prime:n
+    \clist_use:Nn \g_tmpa_clist { ,~ }
+  }
+
+\fn_primes:n { 100 }
+\ExplSyntaxOff
+\end{examplebelow}
+
+\bigskip
+발전 2.
+
+\begin{examplebelow}
+\ExplSyntaxOn
+
+\cs_new:Npn \fn_check_prime:n #1
+  {
+    \int_case:nnF { #1 }
+      {
+        { 1 } { \bool_set_false:N \l_tmpa_bool }
+        { 2 } { \bool_set_true:N \l_tmpa_bool }
+        { 3 } { \bool_set_true:N \l_tmpa_bool }
+      }
+      {
+        \bool_if:nTF
+          {
+            \int_compare_p:n { \int_mod:nn { #1 } { 2 } == 0 } ||
+            \int_compare_p:n { \int_mod:nn { #1 } { 3 } == 0 }
+          }
+          {
+            \bool_set_false:N \l_tmpa_bool
+          }
+          {
+            \bool_set_true:N \l_tmpa_bool
+            \int_set:Nn \l_tmpa_int { 5 }
+            \bool_set:Nn \l_tmpb_bool
+              {
+                \int_compare_p:n { \l_tmpa_int * \l_tmpa_int <= #1 }
+              }
+            \bool_while_do:nn \l_tmpb_bool
+              {
+                \bool_set:Nn \l_tmpa_bool
+                  {
+                    \int_compare_p:n
+                      {
+                        \int_mod:nn { #1 } { \l_tmpa_int } != 0
+                      }
+                    &&
+                    \int_compare_p:n
+                      {
+                        \int_mod:nn { #1 } { \l_tmpa_int + 2 } != 0
+                      }
+                  }
+                \bool_set:Nn \l_tmpb_bool
+                  {
+                    \l_tmpa_bool &&
+                    \int_compare_p:n { \l_tmpa_int * \l_tmpa_int <= #1 }
+                  }
+                \int_add:Nn \l_tmpa_int { 6 }
+              }
+          }
+      }
+
+    \bool_if:NTF \l_tmpa_bool { prime } { not~a~prime }
+  }
+
+\begin{tabular}{rl}
+  1 & \fn_check_prime:n { 1 }\\
+  2 & \fn_check_prime:n { 2 }\\
+  3 & \fn_check_prime:n { 3 }\\
+  4 & \fn_check_prime:n { 4 }\\
+  5 & \fn_check_prime:n { 5 }\\
+  96 & \fn_check_prime:n { 96 }\\
+  97 & \fn_check_prime:n { 97 }\\
+  98 & \fn_check_prime:n { 98 }\\
+\end{tabular}
+\ExplSyntaxOff
+\end{examplebelow}
+
+\bigskip
+실력 4.
+
+\begin{examplebelow}
+\ExplSyntaxOn
+
+\cs_new:Npn \turn_with:n #1
+  {
+    -- ([turn] 89 \c_colon_str #1 cm)
+  }
+
+\cs_new:Npn \turn_times:n #1
+  {
+    (0, 0) -- (1, 0)
+    \int_step_inline:nn { #1 }
+      {
+        \turn_with:n { \fp_eval:n { 1 + ##1 * 0.1 } }
+      }
+  }
+
+\tl_set:Nx \l_tmpa_tl { \turn_times:n { 10 } }
+
+\begin{center}
+\begin{tikzpicture}
+  \exp_last_unbraced:Nx \draw \l_tmpa_tl;
+\end{tikzpicture}
+\end{center}
+\ExplSyntaxOff
+\end{examplebelow}
+
+\end{document}
+
