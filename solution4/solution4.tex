@@ -243,32 +243,47 @@ Flame of Passion
 \bigskip
 실력 4.
 
-\begin{examplebelow}
+\begin{exampleside}
 \ExplSyntaxOn
-
-\cs_new:Npn \turn_with:n #1
+\cs_new:Npn \turn_with:n #1 #2
   {
-    -- ([turn] 89 \c_colon_str #1 cm)
+    -- ([turn] #1 \c_colon_str #2 cm)
   }
 
-\cs_new:Npn \turn_times:n #1
+\cs_new:Npn \turn_times:n #1 #2 #3
   {
-    (0, 0) -- (1, 0)
-    \int_step_inline:nn { #1 }
+    \tl_set:Nn \l_tmpa_tl {(0, 0) -- (0, #2)}
+    \int_step_inline:nn { #3 }
       {
-        \turn_with:n { \fp_eval:n { 1 + ##1 * 0.1 } }
+        \tl_put_right:Nn \l_tmpa_tl
+          {
+            \turn_with:n { #1 }
+              {
+                \fp_eval:n { #2 + ##1 * #2 }
+              }
+          }
       }
+    \draw \l_tmpa_tl ;
   }
 
-\tl_set:Nx \l_tmpa_tl { \turn_times:n { 10 } }
+\NewDocumentCommand \drawspiral { m m m }
+  {
+    \begin{tikzpicture}
+      \turn_times:n { #1 } { #2 } { #3 }
+    \end{tikzpicture}
+  }
 
-\begin{center}
-\begin{tikzpicture}
-  \exp_last_unbraced:Nx \draw \l_tmpa_tl;
-\end{tikzpicture}
-\end{center}
 \ExplSyntaxOff
-\end{examplebelow}
+\begin{center}
+  \drawspiral{119}{0.03}{100}\\
+  \drawspiral{104}{0.028}{100}\\
+  \drawspiral{89}{0.025}{100}\\
+  \drawspiral{80}{0.022}{100}\\
+  \drawspiral{71}{0.02}{100}\\
+  \drawspiral{65}{0.018}{100}\\
+  \drawspiral{59}{0.016}{100}
+\end{center}
+\end{exampleside}
 
 \end{document}
 
