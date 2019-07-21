@@ -1,0 +1,503 @@
+\documentclass[a4paper,amsmath]{oblivoir}
+
+\usepackage{fapapersize}
+\usefapapersize{*,*,1in,*,1in,*}
+
+\makeatletter
+\let\ATonum\@onum
+\makeatother
+
+\usepackage{esgutil}
+\usepackage{refcount}
+
+
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{hologo}
+\usepackage{relsize}
+\usepackage{tcolorbox}
+\tcbuselibrary{listings,breakable}
+\tcbset{listing engine=listings,colframe=cyan,colback=cyan!5!white}
+
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{Noto Sans}
+\setmonofont{Noto Sans Mono}
+\setkomainfont(Noto Serif CJK KR)(* Bold)(Noto Sans CJK KR)
+\setkosansfont[Noto Sans CJK KR]()( Bold)( Medium)
+\usepackage{unicode-math}
+\setmathfont{texgyrepagella-math.otf}
+
+\newcounter{sub}
+\newcommand\bangotsuite{\stepcounter{sub}\thesub}
+
+\usepackage{tikz}
+\newcommand\tikzlogo{Ti\textit{k}Z}
+
+\setlength{\parindent}{0mm}
+
+\newcommand\pkg[1]{\textsf{#1}}
+
+\ExplSyntaxOn 
+
+\NewDocumentEnvironment {intro} {o}
+{
+  \IfValueTF { #1 }
+  {
+    \int_set:Nn \l_tmpa_int { #1 }
+  }
+  {
+    \int_set:Nn \l_tmpa_int { 1 }
+  }
+  \noindent \rule {\linewidth}{3pt}
+  \par 
+  \sffamily [No.\space\int_use:N \l_tmpa_int ]\ \ 
+  \bfseries
+}
+{
+  \hfill 2019년 7월 21
+  \par 
+  \vskip -.3\baselineskip 
+  \noindent \rule {\linewidth }{1pt}
+  \par 
+  \vskip .5\baselineskip 
+}
+
+\NewDocumentCommand \exverb { d|| }
+{
+  \texttt { \tl_to_str:n { #1 } }
+}
+
+\ExplSyntaxOff 
+
+\NewDocumentEnvironment {questiona} { m }
+{
+  %    \medskip
+  \begin{tcolorbox}[title={#1},fonttitle={\sffamily\bfseries}]
+    }{%
+  \end{tcolorbox}
+}
+
+\NewDocumentEnvironment {questionp} { }
+{
+  %    \medskip
+  \begin{tcolorbox}[colframe=orange!30!black!60,colbacktitle=orange!25!gray,
+    title={연습문제},fonttitle={\sffamily\bfseries}]
+    }{%
+  \end{tcolorbox}
+}
+
+
+\NewDocumentEnvironment {exampleonly} {}
+{%
+  %    \begin{tcblisting}{listing only}
+  \expandafter\tcblisting{listing only,breakable,before={\par\medskip\setstretch{1}}}
+  }{
+  \endtcblisting
+  %    \end{tcblisting}
+}
+
+\NewDocumentEnvironment {exampleside} {}
+{%
+  \tcblisting{listing side text,righthand width=.35\textwidth,breakable,before={\par\medskip\setstretch{1}}}%
+  }{%
+  \endtcblisting
+}
+
+%\NewDocumentEnvironment {examplebelow} {}
+%{%
+%    \medskip
+%    \tcblisting{text below listing,breakable}%
+%}{%
+%    \endtcblisting
+%}
+\newtcblisting{examplebelow}{breakable,before={\par\medskip\setstretch{1}}}
+
+\begin{document}
+
+\begin{intro}[5]
+  Dim and Dimmer
+\end{intro}
+
+\fbox{기본} 1. 다음 도표의 빈 칸을 채워 완성하여라.
+
+\begin{examplebelow}
+\ExplSyntaxOn
+
+\cs_new:Npn \convert_from:n #1
+  {
+    \dim_to_decimal_in_unit:nn { #1 } { 1pt } &
+    \dim_to_decimal_in_unit:nn { #1 } { 1mm } &
+    \dim_to_decimal_in_unit:nn { #1 } { 1pc } &
+    \dim_to_decimal_in_unit:nn { #1 } { 1in } \\ \hline
+  }
+
+\begin{center}
+\begin{tabular}{c|c|c|c|c}
+     & pt & mm & pc & in \\ \hline
+  pt & \convert_from:n { 1pt }
+  mm & \convert_from:n { 1mm }
+  pc & \convert_from:n { 1pc }
+  in & \convert_from:n { 1in }
+\end{tabular}
+\end{center}
+
+\ExplSyntaxOff
+\end{examplebelow}
+
+\newpage
+\fbox{기본} 2. \LaTeX 에 \verb|\settowidth|와 \verb|\settoheight|, \verb|\settodepth|라는 명령이 있다. 이의 사용법은 다음과 같다.
+
+\begin{exampleside}
+  \newlength{\mylen}
+  \settowidth{\mylen}{beautiful}
+  \the\mylen
+\end{exampleside}
+
+이것과 동일한 작용을 하는 \verb|\SettoWidth|, \verb|\SettoHeight|, \verb|\SettoDepth|를 expl3로 만들고 \verb|\SettoTotalheight|도 작성해보아라. 
+
+\begin{examplebelow}
+\ExplSyntaxOn
+\NewDocumentCommand \SettoWidth { m m }
+  {
+    \dim_if_exist:NTF { #1 }
+      {
+        \hbox_set:Nn \l_tmpa_box { #2 }
+        \dim_set:Nn \l_tmpa_dim { \box_wd:N \l_tmpa_box }
+        \dim_set_eq:NN #1 \l_tmpa_dim
+      }
+      {
+        \texttt{\bs #1}~is~invalid
+      }
+  }
+
+\NewDocumentCommand \SettoHeight { m m }
+  {
+    \dim_if_exist:NTF { #1 }
+      {
+        \hbox_set:Nn \l_tmpa_box { #2 }
+        \dim_set:Nn \l_tmpa_dim { \box_ht:N \l_tmpa_box }
+        \dim_set_eq:NN #1 \l_tmpa_dim
+      }
+      {
+        \texttt{\bs #1}~is~invalid
+      }
+  }
+
+\NewDocumentCommand \SettoDepth { m m }
+  {
+    \dim_if_exist:NTF { #1 }
+      {
+        \hbox_set:Nn \l_tmpa_box { #2 }
+        \dim_set:Nn \l_tmpa_dim { \box_dp:N \l_tmpa_box }
+        \dim_set_eq:NN #1 \l_tmpa_dim
+      }
+      {
+        \texttt{\bs #1}~is~invalid
+      }
+  }
+
+\NewDocumentCommand \SettoTotalheight { m m }
+  {
+    \dim_if_exist:NTF { #1 }
+      {
+        \hbox_set:Nn \l_tmpa_box { #2 }
+        \dim_set:Nn \l_tmpa_dim { \box_ht:N \l_tmpa_box }
+        \dim_set:Nn \l_tmpb_dim { \box_dp:N \l_tmpa_box }
+        \dim_set:Nn #1 { \l_tmpa_dim + \l_tmpb_dim }
+      }
+      {
+        \texttt{\bs #1}~is~invalid
+      }
+  }
+
+\dim_new:N \mywidth
+\SettoWidth{\mywidth}{beautiful}
+\verb|\mywidth|~is~\dim_use:N \mywidth\\
+
+\dim_new:N \myheight
+\SettoHeight{\myheight}{beautiful}
+\verb|\myheight|~is~\dim_use:N \myheight\\
+
+\dim_new:N \mydepth
+\SettoDepth{\mydepth}{beautiful}
+\verb|\mydepth|~is~\dim_use:N \mydepth\\
+
+\dim_new:N \mytotalheight
+\SettoTotalheight{\mytotalheight}{beautiful}
+\verb|\mytotalheight|~is~\dim_use:N \mytotalheight
+\ExplSyntaxOff
+\end{examplebelow}
+
+
+\newpage
+\fbox{기본} 3. 다음 문장에서, 각 단어의 (문장부호를 제외한) 길이를 측정하여 평균값을 구하고, 그 문단의 margin에 \verb|\rule{<평균값>}{10pt}|의 막대를 그려라.
+
+\begin{framed}
+  남방의 비는 차갑고 단단하고 찬란한 눈꽃으로 변하는 일이 절대 없다. 식자들은 남방의 비가 단조롭다고 생각하는데 비 자신도 그것을 불행으로 여기는지 어떤지, 강남의 눈은 그래도 촉촉하고 윤기가 돌아 아름답기 그지없다. 그것은 아직 눈뜨지 않은 청춘의 소식이며, 건강한 처녀의 살결이다. 
+
+  눈 덮인 들에는 핏빛의 붉은 동백이며, 흰빛에 푸르름이 감도는 외겹 매화며, 경쇠 모양의 진노랑 새양꽃이 있고, 눈 밑에는 아직도 파랗게 언 잡초들이 있다. 나비는 분명 없었다. 꿀벌이 동백꽃과 매화꽃의 꿀을 따러 왔었는지 아닌지, 나는 확실히 기억할 수 없다. 단지 나의 눈앞에는 겨울꽃이 핀 눈 덮인 들판에 바쁘게 날아다니는 수많은 벌들이 보이는 듯, 시끄럽게 붕붕거리는 소리가 들리는 듯했다.
+\end{framed}
+
+\begin{exampleonly}
+\ExplSyntaxOn
+\NewDocumentCommand \SettoWidth { m m }
+  {
+    \dim_if_exist:NTF { #1 }
+      {
+        \hbox_set:Nn \l_tmpa_box { #2 }
+        \dim_set:Nn \l_tmpa_dim { \box_wd:N \l_tmpa_box }
+        \dim_set_eq:NN #1 \l_tmpa_dim
+      }
+      {
+        \texttt{\bs #1}~is~invalid
+      }
+  }
+
+\dim_new:N \l_word_length_dim
+\cs_new:Npn \tl_average_word_length:n #1
+  {
+    \tl_if_blank:nF { #1 }
+      {
+        \seq_set_split:Nnn \l_tmpa_seq { ~ } { #1 }
+        \dim_zero:N \l_word_length_dim
+        \seq_map_inline:Nn \l_tmpa_seq
+          {
+            \SettoWidth { \l_tmpb_dim } { ##1 }
+            \dim_add:Nn \l_word_length_dim { \l_tmpb_dim }
+          }
+        #1.~
+        \marginpar
+          {
+            \rule
+              {
+                \dim_eval:n { \l_word_length_dim / \seq_count:N \l_tmpa_seq }
+              }
+              {
+                10pt
+              }
+          }
+      }
+  }
+
+\NewDocumentCommand \averagewordlength { m }
+  {
+    \seq_set_split:Nnn \l_tmpa_seq { . } { #1 }
+    \seq_map_function:NN \l_tmpa_seq \tl_average_word_length:n
+  }
+\ExplSyntaxOff
+
+\averagewordlength
+  {
+    남방의 비는 차갑고 단단하고 찬란한 눈꽃으로 변하는 일이 절대 없다. 식자들은 남방의 비가 단조롭다고 생각하는데 비 자신도 그것을 불행으로 여기는지 어떤지, 강남의 눈은 그래도 촉촉하고 윤기가 돌아 아름답기 그지없다. 그것은 아직 눈뜨지 않은 청춘의 소식이며, 건강한 처녀의 살결이다.
+    눈 덮인 들에는 핏빛의 붉은 동백이며, 흰빛에 푸르름이 감도는 외겹 매화며, 경쇠 모양의 진노랑 새양꽃이 있고, 눈 밑에는 아직도 파랗게 언 잡초들이 있다. 나비는 분명 없었다. 꿀벌이 동백꽃과 매화꽃의 꿀을 따러 왔었는지 아닌지, 나는 확실히 기억할 수 없다. 단지 나의 눈앞에는 겨울꽃이 핀 눈 덮인 들판에 바쁘게 날아다니는 수많은 벌들이 보이는 듯, 시끄럽게 붕붕거리는 소리가 들리는 듯했다.
+  }
+\end{exampleonly}
+
+\ExplSyntaxOn
+\NewDocumentCommand \SettoWidth { m m }
+  {
+    \dim_if_exist:NTF { #1 }
+      {
+        \hbox_set:Nn \l_tmpa_box { #2 }
+        \dim_set:Nn \l_tmpa_dim { \box_wd:N \l_tmpa_box }
+        \dim_set_eq:NN #1 \l_tmpa_dim
+      }
+      {
+        \texttt{\bs #1}~is~invalid
+      }
+  }
+
+\dim_new:N \l_word_length_dim
+\cs_new:Npn \tl_average_word_length:n #1
+  {
+    \tl_if_blank:nF { #1 }
+      {
+        \seq_set_split:Nnn \l_tmpa_seq { ~ } { #1 }
+        \dim_zero:N \l_word_length_dim
+        \seq_map_inline:Nn \l_tmpa_seq
+          {
+            \SettoWidth { \l_tmpb_dim } { ##1 }
+            \dim_add:Nn \l_word_length_dim { \l_tmpb_dim }
+          }
+        #1.~
+        \marginpar
+          {
+            \rule
+              {
+                \dim_eval:n { \l_word_length_dim / \seq_count:N \l_tmpa_seq }
+              }
+              {
+                10pt
+              }
+          }
+      }
+  }
+
+\NewDocumentCommand \averagewordlength { m }
+  {
+    \seq_set_split:Nnn \l_tmpa_seq { . } { #1 }
+    \seq_map_function:NN \l_tmpa_seq \tl_average_word_length:n
+  }
+\ExplSyntaxOff
+
+\averagewordlength
+  {
+    남방의 비는 차갑고 단단하고 찬란한 눈꽃으로 변하는 일이 절대 없다. 식자들은 남방의 비가 단조롭다고 생각하는데 비 자신도 그것을 불행으로 여기는지 어떤지, 강남의 눈은 그래도 촉촉하고 윤기가 돌아 아름답기 그지없다. 그것은 아직 눈뜨지 않은 청춘의 소식이며, 건강한 처녀의 살결이다.
+    눈 덮인 들에는 핏빛의 붉은 동백이며, 흰빛에 푸르름이 감도는 외겹 매화며, 경쇠 모양의 진노랑 새양꽃이 있고, 눈 밑에는 아직도 파랗게 언 잡초들이 있다. 나비는 분명 없었다. 꿀벌이 동백꽃과 매화꽃의 꿀을 따러 왔었는지 아닌지, 나는 확실히 기억할 수 없다. 단지 나의 눈앞에는 겨울꽃이 핀 눈 덮인 들판에 바쁘게 날아다니는 수많은 벌들이 보이는 듯, 시끄럽게 붕붕거리는 소리가 들리는 듯했다.
+  }
+
+
+\newpage
+\fbox{기본} 4. 다음 표를 완성하고 1em의 크기가 fontsize에 따라 어떻게 달라지는지 조사하여라. 만약 문서 폰트 크기 옵션이 10pt가 아니라 11pt 또는 12pt가 되면 이 값이 어떻게 변하는지도 조사하여라.
+
+\begin{examplebelow}
+\begin{center}
+  \ExplSyntaxOn
+
+  \begin{tabular}{r|r}
+    \hline
+    font~size~command & value~of~em \\ \hline
+    \bs tiny & 6.0pt,~7.0pt,~8.0pt \\ \hline
+    \bs scriptsize & 7.0pt,~8.0pt,~9.0pt \\ \hline
+    \bs footnotesize & 8.0pt,~9.0pt,~10.0pt \\ \hline
+    \bs small & 9.0pt,~10.0pt,~10.95pt \\ \hline
+    \bs normalsize & 10.0pt,~10.95pt,~12.0pt \\ \hline
+    \bs large & 10.95pt,~12pt,~14.4pt \\ \hline
+    \bs Large & 12.0pt,~14.4pt,~17.28pt \\ \hline
+    \bs LARGE & 14.4pt,~17.28pt,~20.74pt \\ \hline
+    \bs huge & 17.28pt,~20.74pt,~24.88pt \\ \hline
+    \bs Huge & 20.74pt,~24.88pt,~24.88pt \\ \hline
+  \end{tabular}\
+
+  \ExplSyntaxOff
+\end{center}
+\end{examplebelow}
+
+
+\newpage
+\makeatletter
+\newlength\LC@temph\newlength\LC@tempw\newlength\LC@tempwtwo
+\newlength\LC@templ
+\newcommand*{\lccompthreevar}[5]{%
+  \settowidth{\LC@temph}{$\scriptstyle #2$}
+  \settowidth{\LC@tempw}{$\scriptstyle #3$}
+  \settowidth{\LC@tempwtwo}{$\scriptstyle #3$}
+  \settowidth{\LC@templ}{$\scriptstyle #4 #5$}
+  {#1}{}_{\substack{#2 #3 #4 #5\\\makebox[\LC@temph]{\hfill$\scriptstyle 1$\hfill}%
+      \makebox[\LC@tempw]{\hfill\phantom{$\scriptstyle 2$}\hfill}%
+      \hspace{\LC@templ}%
+  }}^{\hspace{\LC@temph}\hspace{\LC@tempw}\makebox[\LC@tempwtwo]{\hfill$\scriptstyle 3$\hfill}}
+}
+\makeatother
+
+\fbox{실력} 5. 다음과 같은 식을 만들어야 한다고 하자:
+${}_n\lccompthreevar{Q}{x}{y}{z}{}$
+
+\medskip
+이와 같은 식을 식자하는 \verb|\mycmd{Q}{n}{x}{y}{z}{1}{3}|와 같은 명령을 작성하되,
+각 인자의 의미가 다음과 같도록 하여라.
+\begin{enumerate}[\expandafter\ATonum1] \tightlist
+  \item \verb|#2|는 \verb|#1|의 왼쪽에 오는 하첨자이다.
+  \item \verb|#3, #4, #5| 세 개는 \verb|#1|의 오른쪽에 오는 하첨자이다.
+  \item \verb|#6|에는 한 자리 숫자가 오는데 그 값은 3이하이다. 이 숫자에 따라 x, y, z의 해당 위치 아래(예컨대 1이면 x의 아래, 2이면 y의 아래)에 scriptsize로 식자한다.
+  \item \verb|#7|은 \verb|#6|과 같이 하되, 하첨자의 위쪽에 식자한다.
+\end{enumerate}
+
+\begin{examplebelow}
+\ExplSyntaxOn
+\dim_new:N \l_temph_dim
+\dim_new:N \l_tempw_dim
+\dim_new:N \l_tempwtwo_dim
+\dim_new:N \l_templ_dim
+
+\NewDocumentCommand \MyCmd { m m m m m m m }
+  {
+    \SettoWidth{\l_temph_dim}{$\scriptstyle #3$}
+    \SettoWidth{\l_tempw_dim}{$\scriptstyle #4$}
+    \SettoWidth{\l_templ_dim}{$\scriptstyle #5$}
+    { }\c_math_subscript_token{ #2 }
+    #1
+    { }\c_math_subscript_token
+      {
+        \substack
+          {
+            #3 #4 #5 {}\\
+            \hbox_to_wd:nn { \l_temph_dim } { $\scriptstyle #6$ }
+            \hbox_to_wd:nn { \l_tempw_dim + \l_templ_dim } { }
+          }
+      }
+    \c_math_superscript_token
+      {
+        \hbox_to_wd:nn { \l_temph_dim + \l_tempw_dim } { }
+        \hbox_to_wd:nn { \l_templ_dim } { $\scriptstyle #7$ }
+      }
+  }
+\ExplSyntaxOff
+
+\[
+  \MyCmd{Q}{n}{x}{y}{z}{1}{3}
+\]
+\end{examplebelow}
+
+
+\newpage
+\fbox{기본} 1. 심심해진 철수는 idle 프로그램으로 다음과 같은 것을 하면서 놀았다.
+이것을 본 영희가 “나는 expl3로 할 수 있어”라고 하였다. 과연 할 수 있었을까?
+
+\begin{examplebelow}
+\ExplSyntaxOn
+\cs_new:Npn \approx_pi:n #1
+  {
+    \int_zero:N \l_tmpa_int
+    \int_step_inline:nn { #1 }
+      {
+        \fp_set:Nn \l_tmpa_fp { rand() }
+        \fp_set:Nn \l_tmpb_fp { rand() }
+        \fp_compare:nT
+          {
+            \l_tmpa_fp**2 + \l_tmpb_fp**2 <= 1
+          }
+          {
+            \int_incr:N \l_tmpa_int
+          }
+      }
+    \fp_eval:n { \l_tmpa_int / #1 * 4 }
+  }
+
+\approx_pi:n { 10000 }
+\ExplSyntaxOff
+\end{examplebelow}
+
+
+\newpage
+\fbox{기본} 2. 등거리 random walk을 모사하려고 한다. 회전각을 난수적으로 얻어서
+\begin{examplebelow}
+\ExplSyntaxOn
+\cs_new:Npn \generate_random_walk:n #1
+  {
+    \tl_set:Nn \l_tmpa_tl { (0, 0) -- (0, 0.5) }
+    \int_step_inline:nn { #1 }
+      {
+      \tl_put_right:Nx \l_tmpa_tl
+        {
+          -- ([turn] \int_rand:n { 360 } \c_colon_str 0.5)
+        }
+      }
+    \draw \l_tmpa_tl ;
+  }
+
+\NewDocumentCommand \generaterandomwalk { m }
+  {
+    \begin{center}
+    \begin{tikzpicture}
+      \generate_random_walk:n { #1 }
+    \end{tikzpicture}
+    \end{center}
+  }
+\ExplSyntaxOff
+
+\generaterandomwalk{100}
+\end{examplebelow}
+
+\end{document}
+
