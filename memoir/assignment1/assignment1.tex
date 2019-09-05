@@ -1,0 +1,67 @@
+\documentclass[a4paper]{memoir}
+
+\usepackage{graphicx}
+\usepackage{blindtext}
+
+\setsecnumdepth{subsection}
+\settocdepth{subsection}
+
+% Set chapter number style
+\setlength\beforechapskip{45pt}
+\makeatletter
+\renewcommand{\printchaptername}{\center\chapnamefont \@chapapp}
+\makeatother
+\renewcommand{\chapnamefont}{\normalfont\slshape\mdseries\sffamily\large}
+\renewcommand{\chapnumfont}{\normalfont\itshape\mdseries\rmfamily\huge}
+
+% Set chapter title style
+\renewcommand{\chaptitlefont}{\normalfont\upshape\bfseries\sffamily\Huge}
+\renewcommand{\printchaptertitle}[1]{%
+  \hrule\vskip\onelineskip \center\chaptitlefont#1}
+\renewcommand{\afterchaptertitle}{%
+  \vskip\onelineskip \hrule\vskip3\onelineskip}
+
+\aliaspagestyle{part}{empty}
+
+\def\clearpagetext{%
+  \vfill
+  \begin{center}%
+    \textit{This page left blank intentionally}
+  \end{center}%
+  \vfill}
+
+\renewcommand{\clearforchapter}{%
+  \thispagestyle{empty}\cleartooddpage[\clearpagetext]}
+
+\pagestyle{ruled}
+\begin{document}
+
+\frontmatter
+\tableofcontents
+
+\mainmatter
+\part{The Blind Texts}
+
+\chapter{Introduction}
+
+\section{Section Start}
+
+\blindmathpaper
+
+\chapter{Practical Use}
+
+\section{Special Paragraphs}
+
+\subsection{list}
+
+\blindlistoptional{enumerate}
+
+\subsection{Lorem ipsum}
+
+\blindtext[2]
+
+\chapter{Conclusion}
+
+\Blindlistoptional{description}
+
+\end{document}
