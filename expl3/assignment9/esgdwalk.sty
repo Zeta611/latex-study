@@ -1,0 +1,148 @@
+%
+% file: `esgdwalk.sty`
+%
+% (c) 2019 Nova de Hi.
+%
+% A short sample package for Expl3 Study Group of KTUG
+%
+% ======= LPPL =======
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is Nova de Hi.
+%
+\RequirePackage{expl3,xparse,l3keys2e}
+\ProvidesExplPackage
+    { esgdwalk }
+    { 2017/08/03 }
+    { 1.0 }
+    { a sample expl3 package }
+
+\RequirePackage{tikz}
+\RequirePackage{esgutil}
+
+%%% package options
+\keys_define:nn { dwalkpackage }
+{
+    color    .tl_set:N = \g_coloropt_tl
+}
+
+\keys_set:nn { dwalkpackage }
+{
+    color = black
+}
+
+\ProcessKeysOptions { dwalkpackage }
+
+%%% keys
+\keys_define:nn { dwalk }
+{
+    angle    .tl_set:N  = \l_optangle_tl,
+    forward  .tl_set:N  = \l_optforward_tl,
+    walk     .int_set:N = \l_walk_int
+}
+
+%%% variables
+\tl_new:N \l_angle_tl
+\tl_new:N \l_fw_tl
+
+\bool_new:N \l_anglerandom_bool
+\bool_new:N \l_fwrandom_bool
+
+\tl_new:N \l_outall_tl
+
+%%% document command 
+\NewDocumentCommand \DWalk { m }
+{
+    \keys_set:nn { dwalk } { #1 }
+    
+    %%% “angle=random”
+    \str_if_eq:eeTF { \l_optangle_tl } { random }
+    {
+        \bool_set_true:N \l_anglerandom_bool
+    }
+    {
+        \bool_set_false:N \l_anglerandom_bool
+    }
+    
+    %%% “forward=random”
+    \str_if_eq:eeTF { \l_optforward_tl } { random }
+    {
+        \bool_set_true:N \l_fwrandom_bool
+    }
+    {
+        \bool_set_false:N \l_fwrandom_bool
+        
+        %%% given with plussign
+        \exp_args:Nx \str_if_in:nnTF { \l_optforward_tl } { + }
+        {
+            \esg_split_plussign:VNN \l_optforward_tl \l_a_tl \l_b_tl
+            \tl_set_eq:NN \l_fw_tl \l_a_tl
+            \cs_set_eq:NN \get_fw: \get_fw_plus:
+        }
+        {
+            %% function \get_fw: will be called 
+            %% on every step of the loop
+            \cs_set:Nn \get_fw:
+            {
+                \tl_set_eq:NN \l_fw_tl \l_optforward_tl
+            }
+        }
+    }
+    
+    \dwalk_main:V \l_walk_int
+
+}
+
+%%% increase “forward” on every step
+\cs_new:Nn \get_fw_plus:
+{
+    \tl_set:Nx \l_fw_tl { \fp_eval:n { \l_fw_tl + \l_b_tl } }
+}
+
+\cs_new:Npn \dwalk_main:n #1
+{
+    %% build up \l_outall_tl
+    \tl_set:Nn \l_outall_tl { (0,0) -- }
+    
+    \int_step_inline:nn { #1 - 1 }
+    {
+        \bool_if:NTF \l_anglerandom_bool
+        {
+            \tl_set:Nx \l_angle_tl { \fp_eval:n { rand() * 360 } }
+        }
+        {
+            \tl_set_eq:NN \l_angle_tl \l_optangle_tl
+        }
+        
+        \bool_if:NTF \l_fwrandom_bool
+        {
+            \tl_set:Nx \l_fw_tl { \fp_eval:n { rand() * 2.5 + .5 } }
+        }
+        {
+            \get_fw:
+        }
+        
+        \tl_put_right:Nx \l_outall_tl { ( [turn] \l_angle_tl \c_colon_str \l_fw_tl ) -- }
+    }
+
+    %% last item without “--“
+    \tl_put_right:Nx \l_outall_tl { ( [turn ] \l_angle_tl \c_colon_str \l_fw_tl ) }
+    
+    \tl_put_left:Nx \l_outall_tl { [ \g_coloropt_tl ] }
+
+    \begin{tikzpicture}
+    \exp_last_unbraced:No \draw \l_outall_tl ;
+    \end{tikzpicture}
+}
+
+\cs_generate_variant:Nn \dwalk_main:n { V }
+
+\endinput

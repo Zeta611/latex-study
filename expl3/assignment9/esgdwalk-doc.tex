@@ -1,0 +1,94 @@
+%
+% `esgdwalk-doc.tex’
+%    this document is part of esgdwalk package version 1.0 (2019/08/03)
+% written by Nova de Hi.
+% 
+%
+\documentclass[nokorean]{oblivoir}
+
+%%% package version and date
+\newcommand*\esgdwalkdate {2019/08/03}
+\newcommand*\esgdwalkversion {1.0}
+
+\usepackage{fapapersize}
+\usefapapersize{210mm,297mm,1in,*,1in,*}
+
+\ifLuaOrXeTeX
+\usepackage{fontspec}
+\setmainfont{TeX Gyre Termes}
+\else
+\usepackage{mathptmx}
+\fi
+
+\usepackage[color=orange]{esgdwalk}
+
+\begin{document}
+
+\title{esgdwalk package}
+\author{Nova de Hi}
+\date{\esgdwalkdate\quad ver \esgdwalkversion}
+
+\maketitle
+
+\begin{abstract}
+\texttt{esgdwalk} package provides only one command \verb|\DWalk|.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+
+I made this package in order to provide a practical example of
+packing an EXPL3 package. 
+
+\section{Usage}
+
+You can load this package with a line in the preamble of your document.
+\begin{verbatim}
+\usepackage[<option>]{esgdwalk}
+\end{verbatim}
+
+The \texttt{<option>} can be specified as following:
+\begin{verbatim}
+\usepackage[color=blue]{esgdwalk}
+\end{verbatim}
+then all the lines drawn with \verb|\DWalk| command will be set in blue color.
+
+The only command provided by this package is \verb|\DWalk|.
+
+\begin{verbatim}
+\DWalk{angle=<angle>,forward=<forward>,walk=<walk>}
+\end{verbatim}
+
+This command makes a drawing area utilizing TikZ and draws (colored) lines according to
+the rules of:\\
+1. go forward in the length of \texttt{forward}\\
+2. turn left in \texttt{angle} angle, \\
+3. repeat these actions in \texttt{walk} times.
+
+If \texttt{angle} is \verb|random|, then \verb|\DWalk| will
+draw all lines with randomized value of angle.
+
+If the value of the key \texttt{forward} is \verb|random|, the same as \verb|angle=random|.
+
+When \texttt{forward} is given as \verb|forward=a+b|, then the length of the line
+will be grow increasingly from \verb|a| by \verb|b| on each turn.
+
+This package requires the \verb|tikz| and \verb|esgutil| packages. The latter
+can be downloaded from my personal website, the url address of which is not known.
+
+\section{Example}
+
+\begin{verbatim}
+\usepackage[color=orange]{esgdwalk}  %%% preamble
+%...
+\DWalk{angle=89,forward=0.02+0.02,walk=200}
+\end{verbatim}
+
+\DWalk{angle=89,forward=0.02+0.02,walk=200}
+
+\section{Acknowledgements}
+
+Many thanks go to the members of ESG.
+
+\end{document}

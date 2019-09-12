@@ -1,43 +1,43 @@
 \documentclass[a4paper]{memoir}
 
-\usepackage{graphicx}
 \usepackage{blindtext}
 
-\setsecnumdepth{subsection}
-\settocdepth{subsection}
+\maxsecnumdepth{subsection}
+\maxtocdepth{subsection}
 
-% Set chapter number style
-\setlength\beforechapskip{45pt}
-\makeatletter
-\renewcommand{\printchaptername}{\center\chapnamefont \@chapapp}
-\makeatother
-\renewcommand{\chapnamefont}{\normalfont\slshape\mdseries\sffamily\large}
-\renewcommand{\chapnumfont}{\normalfont\itshape\mdseries\rmfamily\huge}
-
-% Set chapter title style
-\renewcommand{\chaptitlefont}{\normalfont\upshape\bfseries\sffamily\Huge}
-\renewcommand{\printchaptertitle}[1]{%
-  \hrule\vskip\onelineskip \center\chaptitlefont#1}
-\renewcommand{\afterchaptertitle}{%
-  \vskip\onelineskip \hrule\vskip3\onelineskip}
-
-\aliaspagestyle{part}{empty}
+\newlength{\mylength}
 
 \def\clearpagetext{%
-  \vfill
-  \begin{center}%
-    \textit{This page left blank intentionally}
-  \end{center}%
-  \vfill}
+\thispagestyle{empty}
+\calccentering{\mylength}
+\begin{vplace}
+  \begin{adjustwidth*}{\mylength}{-\mylength}
+    \begin{center}
+      \textit{This page left blank intentionally}
+    \end{center}
+  \end{adjustwidth*}
+\end{vplace}}
 
 \renewcommand{\clearforchapter}{%
-  \thispagestyle{empty}\cleartooddpage[\clearpagetext]}
+\cleartooddpage[\clearpagetext]}
 
-\pagestyle{ruled}
+\renewcommand*{\afterpartskip}{%
+  \thispagestyle{empty}
+  \clearpage
+  \clearpagetext}
+
+\chapterstyle{bianchi}
+\aliaspagestyle{part}{empty}
+
+
 \begin{document}
 
+\pagestyle{Ruled}
 \frontmatter
 \tableofcontents
+
+\clearpage
+\clearpagetext
 
 \mainmatter
 \part{The Blind Texts}
