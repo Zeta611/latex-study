@@ -1,0 +1,255 @@
+\documentclass[b5paper]{memoir}
+
+\usepackage{xparse}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+%%% Global Fonts Settings
+\usepackage{fontspec}
+\setmainfont{XITS}
+\setsansfont{TeX Gyre Heros}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{unicode-math}
+\setmathfont{XITS Math}
+%
+%% chapter name font : LinBiolinum_RB.otf
+%% chapter title font: LinBiolinum_R.otf
+%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% page layout
+%% leftmargin : 20mm, 
+%% rightmargin: 35mm
+%% uppermargin: 33mm
+%% lowermargin: 33mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%% titlepage
+
+\mainmatter
+
+\chapterstyle{MEst}
+\pagestyle{MEst}
+
+\chapter{Consumer Theory}
+
+In the first two chapters of this volume, we will explore the essential features of modern
+consumer theory --- a bedstock foundation on which so many theoretical structures in
+economics are built. Some time later in your study of economics, you will begin to notice
+just how central this theory is to the economist’s way of thinking. Time and time again
+you will hear the echoes of consumer theory in virtually every branch of the discipline 
+--- how it is conceived, how it is constructed, and how it is applied.
+
+\section{Primitive Notions}
+
+There are four building blocks in any model of consumer choice. 
+They are the consumption set, the feasible set, the preference relation, and the behavioural assumption. 
+Each is conceptually distinct from the others, though it is quite common sometimes to lose sight
+of that fact. This basic structure is extremely general, and so, very flexible. By
+specifying the form each of these takes in a given problem, many different situations
+involving choice can be formally described and analysed. Although we will tend to
+concentrate here on specific formalisations that have come to dominate economists’ view of
+an individual consumer’s behaviour, it is well to keep in mind that ‘consumer theory’
+\emph{per se} is in fact a very rich and flexible \emph{theory of choice}.
+
+The notion of a \markupwd{consumption set} is straightforward. We let the consumption set, $X$,
+represent the set of all alternatives, or complete consumption plans, that the consumer
+can conceive --- whether some of them will be achievable in practice or not. What we
+intend to capture here is the universe of alternative choices over which the consumer’s
+mind is capable of wandering, unfettered by consideration of the realities of his present
+situation. The consumption set is sometimes also called the \markupwd{choice set}.
+
+Let each commodity be measured in some infinitely divisible units. Let $x_i \in \mathbb{R}$
+represent the number of units of good $i$. We assume that only non-negative units of each
+good are meaningful and that it is always possible to conceive of having \emph{no} units
+of any particular commodity. Further, we assume there is a finite, fixed, but arbitrary
+number $n$ of different goods. We let $\mathbf x = (x_1, \ldots, x_n )$ be a vector
+containing different quantities of each of the $n$ commodities and call $\mathbf x$ a
+\markupwd{consumption bundle} or a \markupwd{consumption plan}. A consumption bundle
+$\mathbf x \in X$ is thus represented by a point $\mathbf x \in \mathbb{R}^n_+$. Usually,
+we’ll simplify things and just think of the consumption set as the \emph{entire}
+non-negative orthant, $X = \mathbb{R}^n_+$. In this case, it is easy to see that each 
+of the following basic requirements is satisfied.
+
+\begin{assump}[Properties of the Consumption Set $X$]
+The minimal requirements on the consumption set are
+\begin{enumerate} 
+\item $X \subseteq \mathbb{R}^n_+$.
+\item $X$ is closed.
+\item $X$ is convex.
+\item $\mathbf 0 \in X$.
+\end{enumerate}
+\end{assump}
+
+The notion of a \markupwd{feasible set} is likewise very straightforward. We let $B$ represent
+all those alternative consumption plans that are both conceivable and, more important,
+realistically obtainable given the consumer’s circumstances. What we intend to capture
+here are precisely those alternatives that are \emph{achievable} given the economic
+realities the consumer faces. The feasible set $B$ then is that subset of the consumption
+set $X$ that remains after we have accounted for any constraints on the consumer’s access
+to commodities due to the practical, institutional, or economic realities of the world.
+How we specify those realities in a given situation will determine the precise
+configuration and additional properties that $B$ must have. 
+For now, we will simply say that $B \subset X$.
+
+A \markupwd{preference relation} typically specifies the limits, if any, on the consumer’s
+ability to perceive in situations involving choice the form of consistency or
+inconsistency in the consumer’s choices, and information about the consumer’s tastes for
+the different objects of choice. The preference relation plays a crucial role in any
+theory of choice. Its special form in the theory of consumer behaviour is sufficiently
+subtle to warrant special examination in the next section.
+
+Finally, the model is ‘closed’ by specifying some \markupwd{behavioural assumption}. This
+expresses the guiding principle the consumer uses to make final choices and so identifies
+the ultimate objectives in choice. It is supposed that \emph{the consumer seeks to
+identify and select an available alternative that is most preferred in the light of his
+personal tastes}.
+
+
+\section{Preferences and Utility}
+
+In this section, we examine the consumer’s preference relation and explore its connection
+to modern usage of the term ‘utility’. Before we begin, however, a brief word on the
+evolution of economists’ thinking will help to place what follows in its proper context.
+
+In earlier periods, the so-called ‘Law of Demand’ was built on some extremely strong
+assumptions. In the classical theory of Edgeworth, Mill, and other proponents of the
+utilitarian school of philosophy, ‘utility’ was thought to be something of substance.
+‘Pleasure’ and ‘pain’ were held to be well-defined entities that could be measured and
+compared between individuals. In addition, the ‘Principle of Diminishing Marginal Utility’
+was accepted as a psychological ‘law’, and early statements of the Law of Demand depended
+on it. These are awfully strong assumptions about the inner workings of human beings.
+
+The more recent history of consumer theory has been marked by a drive to render its
+foundations as general as possible. Economists have sought to pare away as many of the
+traditional assumptions, explicit or implicit, as they could and still retain a coherent
+theory with predictive power. Pareto (1896) can be credited with suspecting that the idea
+of a measurable ‘utility’ was inessential to the theory of demand. Slutsky (1915)
+undertook the first systematic examination of demand theory without the concept of a
+measurable substance called utility. Hicks (1939) demonstrated that the Principle of
+Diminishing Marginal Utility was neither necessary, nor sufficient, for the Law of Demand
+to hold. Finally, Debreu (1959) completed the reduction of standard consumer theory to
+those bare essentials we will consider here. Today’s theory bears close and important
+relations to its earlier ancestors, but it is leaner, more precise, and more general.
+
+\subsection{Preference Relations}
+
+Consumer preferences are characterised axiomatically. In this method of modelling as few
+meaningful and distinct assumptions as possible are set forth to characterise the
+structure and properties of preferences. The rest of the theory then builds logically from
+these axioms, and predictions of behaviour are developed through the process of deduction.
+
+These \markupwd{axioms of consumer choice} are intended to give formal mathematical
+expression to fundamental aspects of consumer behaviour and attitudes towards the objects
+of choice. Together, they formalise the view that the consumer \emph{can} choose and that
+choices are \emph{consistent} in a particular way.
+
+Formally, we represent the consumer’s preferences by a \emph{binary relation}, $\succsim$,
+defined on the consumption set, $X$. If $x_1 \succsim x_2$, we say that ‘$x_1$ is at least
+as good as $x_2$’, for this consumer.
+
+That we use a binary relation to characterise preferences is significant and worth a
+moment’s reflection. It conveys the important point that, from the beginning, our theory
+requires relatively little of the consumer it describes. We require only that consumers
+make \emph{binary} comparisons, that is, that they only examine two consumption plans at a
+time and make a decision regarding those two. The following axioms set forth basic
+criteria with which those binary comparisons must conform.
+
+\begin{axiom}[Completeness] \label{ax:1}
+For all $x_1$ and $x_2$ in $X$, either $x_1 \succsim x_2$ or $x_2 \succsim x_1$.
+\end{axiom}
+
+Axiom~\ref{ax:1} formalises the notion that the consumer can make comparisons, that is,
+that he has the ability to discriminate and the necessary knowledge to evaluate
+alternatives. It says the consumer can examine any two distinct consumption plans $x_1$
+and $x_2$ and decide whether $x_1$ is at least as good as $x_2$ or $x_2$ is at least as
+good as $x_1$.
+
+\begin{axiom}[Transitivity] \label{ax:2}
+For any three elements $x_1$, $x_2$, and $x_3$ in $X$, if $x_1 \succsim x_2$ and $x_2
+\succsim x_3$, then $x_1 \succsim x_3$.
+\end{axiom}
+
+Axiom~\ref{ax:2} gives a very particular form to the requirement that the consumer’s
+choices be \emph{consistent}. Although we require only that the consumer be capable of
+comparing two alternatives at a time, the assumption of transitivity requires that those
+pairwise comparisons be linked together in a consistent way.
+
+\section{Exercises}
+
+\chex{Let $X= \mathbb{R}^2_+$. Verify that $X$ satisfies all five properties required of a
+consumption set in Assumption 1.1.}
+
+\chex*{\label{chex:1-2}Let $\gtrsim$ be a preference relation. Prove the following:
+\begin{enumerate}[\quad(1)] 
+\item $\succsim \in \succsim$
+\item $\sim \in \succsim$
+\item $\succ \cup \sim = \succsim$
+\item $\succ \cap \sim = \varnothing$
+\end{enumerate}
+}%
+{Use the definition.}
+
+\chex{Give a proof or convincing argument for each of the following claims made in the
+text. \begin{enumerate}[\quad(1)] \item Neither $\succ$ nor $\sim$ is complete. \item For
+any $x_1$ and $x_2$ in $X$, only one of the following holds: $x_1 \succ x_2$, or $x_2
+\succ x_1$, or $x_1 \sim x_2$. \end{enumerate} }
+
+
+\chex*{\label{chex:1-4}Prove that if $\succsim$ is a preference relation, then the
+relation $\succ$ is transitive and the relation $\sim$ is transitive. Also show that if
+$x_1 \sim x_2 \succsim x_3$, then $x_1 \succsim x_3$.}% 
+{To get you started, take the indifference relation. Consider any three points $x_i \in
+X$, $i=1, 2, 3$, where $x_1 \sim x_2$ and $x_2 \sim x_3$. We want to show that $x_1 \sim
+x_2$ and $x_2 \sim x_3$ $\Rightarrow x_1 \sim x_3$. By definition of $\sim$, $x_1 \sim x_2
+\Rightarrow x_1 \succsim x_2$ and $x_2 \succsim x_1$. Similarly, $x_2 \sim x_3 \Rightarrow
+x_2 \succsim x_3$. By transivity of $\succsim$, $x_1 \succsim x_2$ and $x_2 \succsim x_3
+\Rightarrow x_1 \succsim x_3$. Keep going.}
+
+\chex{If $\succsim$ is a preference relation, prove the following: For any $x_0 \in X$,
+\begin{enumerate}[\quad(1)]
+\item $\sim (x_0) = \succsim (x_0) \cap \succsim (x_0)$
+\item $ \succsim(x_0) = \sim (x_0) \cup \succ (x_0)$
+\item $\sim (x_0) \cap \succ (x_0) = \varnothing$
+\item $ \sim (x_0) \cap \succ (x_0) = \varnothing$
+\item $ \succ (x_0) \cap \succ(x_0) = \varnothing$
+\item $\succ (x_0) \cap \sim (x_0) \cap \succ (x_0) = \varnothing$
+\item $\succ (x_0) \cup \sim (x_0) \cup \succ (x_0) = X$
+\end{enumerate}
+}
+
+\chex{Cite a credible example where the preferences of an ‘ordinary consumer’ would be unlikely to satisfy
+the axiom of convexity.}
+
+\chex{Prove that under Axiom 5a, the set $\succsim (x_0)$ is a convex set for any $x_0 \in X$.}
+
+\chex{Sketch a map of indifference sets that are all parallel, negatively sloped straight
+lines, with preference increasing north-easterly. We know that preferences such as these
+satisfy Axioms 1, 2, 3, and 4. Prove that they also satisfy Axiom 5a. Prove that they do
+not satisfy Axiom 5.}
+
+\chex{Sketch a map of indifference sets that are all parallel right angles that ‘kink’ on
+the line $x_1 = x_2$. If preference increases north-easterly, these preferences will
+satisfy Axioms 1, 2, 3, and 4a. Prove that they also satisfy Axiom 5a. Do they satisfy
+Axiom 4? Do they satisfy Axiom 5?}
+
+\chex*{\label{chex:1-10}Suppose the $\succsim$ is a binary relation over gambles in
+$\mathcal{G}$ satisfying Axioms G2, G3, and G4. Show that $\succsim$ satisfies G1 as
+well.}%
+{Use a method similar to that employed in (1.11) to eliminate the Lagrangian multiplier
+and reduce $(n+1)$ conditions to only $n$ conditions.}
+
+\chex{Show that if $\succsim$ is continuous, then the sets $A$ and $B$ defined in the
+proof of Theorem 1.1 are closed subsets of $\mathbb{R}$.}
+
+\backmatter
+
+%%% hints and answers
+\printHintsAnswers
+
+%%% terms
+\printTerm
+
+\end{document}
