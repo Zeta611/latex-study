@@ -1,5 +1,6 @@
 \documentclass[b5paper]{memoir}
 
+\usepackage{tikz}
 \usepackage{xparse}
 \usepackage{xcolor}
 \usepackage{graphicx}
@@ -22,11 +23,39 @@
 %% rightmargin: 35mm
 %% uppermargin: 33mm
 %% lowermargin: 33mm
+\setstocksize{711pt}{501pt}
+\settrimmedsize{\stockheight}{\stockwidth}{*}
+\settrims{0pt}{0pt}
+\settypeblocksize{526pt}{344pt}{*}
+\setlrmargins{57pt}{*}{*}
+\setulmargins{94pt}{*}{*}
+\setcolsepandrule{10pt}{0pt}
+\setheadfoot{12pt}{24pt}
+\setheaderspaces{*}{12pt}{*}
+\ExplSyntaxOn
+\dim_set:Nn \marginparwidth { \leftmargin - \rightmargin - \marginparsep }
+\ExplSyntaxOff
+\setmarginnotes{7pt}{\marginparwidth}{5pt}
+\checkandfixthelayout
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 
 %%% titlepage
+\thispagestyle{titlingpage}
+\begin{tikzpicture}[remember picture,overlay]
+  \filldraw[fill=blue!30!black, draw=white] (current page.east) --
+    ++(-15cm, 0cm) -- ++(0cm, -7cm) -- ++(15cm, 0cm) -- cycle;
+  \node [xshift=-14.6cm,yshift=-0.4cm,anchor=north west,text=white]
+    at (current page.east)
+  {%
+    \sffamily\HUGE%
+    \begin{tabular}{l}
+      ADVANCED\\MICROECONOMIC\\THEORY\\{\LARGE Jaeho Lee}
+    \end{tabular}
+  };
+\end{tikzpicture}
+\clearpage
 
 \mainmatter
 
