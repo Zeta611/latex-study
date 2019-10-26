@@ -1,0 +1,31 @@
+\documentclass{memoir}
+
+\usepackage{lipsum}
+\usepackage[dvipsnames]{xcolor}
+
+\setstocksize{260mm}{190mm}
+\settrimmedsize{\stockheight}{\stockwidth}{*}
+\settrims{0pt}{0pt}
+\setlrmarginsandblock{30mm}{*}{1.618}
+\checkandfixthelayout
+
+\makepagestyle{moresimple}
+\makeevenhead{moresimple}{}{Jaeho Lee}{}
+\makeoddhead{moresimple}{}{Jaeho Lee}{}
+\makeevenfoot{moresimple}{\thepage}{}{}
+\makeoddfoot{moresimple}{}{}{\thepage}
+
+\ExplSyntaxOn
+\dim_set:Nn \headwidth { \textwidth + \marginparsep + \marginparwidth }
+\ExplSyntaxOff
+
+\makeheadrule{moresimple}{\headwidth}{1pt}
+\makeheadfootruleprefix{moresimple}{\color{WildStrawberry}}{}
+\makerunningwidth{moresimple}{\headwidth}
+\makeheadposition{moresimple}{flushright}{flushleft}{flushright}{flushleft}
+
+
+\begin{document}
+\pagestyle{moresimple}
+\lipsum[1-9]
+\end{document}

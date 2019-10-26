@@ -1,0 +1,14 @@
+\documentclass[a4paper]{memoir}
+
+\usepackage{lipsum}
+\usepackage[dvipsnames]{xcolor}
+
+\makepagestyle{demo}
+\makeheadrule{demo}{\textwidth}{1pt}
+\makefootrule{demo}{\textwidth}{1pt}{\footruleskip}
+\makeheadfootruleprefix{demo}{\color{RoyalPurple}}{\color{Dandelion}}
+
+\begin{document}
+\pagestyle{demo}
+\lipsum[1-5]
+\end{document}

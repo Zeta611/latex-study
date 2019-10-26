@@ -1,0 +1,18 @@
+\documentclass[a4paper]{memoir}
+
+\usepackage{lipsum}
+\usepackage[dvipsnames]{xcolor}
+
+\makepagestyle{moresimple}
+\makeevenhead{moresimple}{}{Jaeho Lee}{}
+\makeoddhead{moresimple}{}{Jaeho Lee}{}
+\makeevenfoot{moresimple}{\thepage}{}{}
+\makeoddfoot{moresimple}{}{}{\thepage}
+
+\makeheadrule{moresimple}{\textwidth}{1pt}
+\makeheadfootruleprefix{moresimple}{\color{WildStrawberry}}{}
+
+\begin{document}
+\pagestyle{moresimple}
+\lipsum[1-5]
+\end{document}

@@ -1,0 +1,14 @@
+\documentclass[a4paper]{memoir}
+
+\usepackage{lipsum}
+
+\makepagestyle{demo}
+\makeevenhead{demo}{ehl}{ehc}{ehr}
+\makeoddhead{demo}{ohl}{ohc}{ohr}
+\makeevenfoot{demo}{efl}{efc}{efr}
+\makeoddfoot{demo}{ofl}{ofc}{ofr}
+
+\begin{document}
+\pagestyle{demo}
+\lipsum[1-10]
+\end{document}

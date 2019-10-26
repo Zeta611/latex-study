@@ -1,0 +1,12 @@
+\documentclass[a4paper]{memoir}
+
+\usepackage{lipsum}
+
+\makepagestyle{moresimple}
+\makeevenfoot{moresimple}{\thepage}{}{}
+\makeoddfoot{moresimple}{}{}{\thepage}
+
+\begin{document}
+\pagestyle{moresimple}
+\lipsum[1-10]
+\end{document}

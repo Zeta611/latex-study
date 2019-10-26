@@ -1,0 +1,21 @@
+\documentclass[a4paper]{memoir}
+
+\usepackage{lipsum}
+\usepackage[dvipsnames]{xcolor}
+
+\makepagestyle{demo}
+
+\ExplSyntaxOn
+\dim_set:Nn \headwidth { \textwidth + \marginparsep + \marginparwidth }
+\ExplSyntaxOff
+
+\makerunningwidth{demo}{\headwidth}
+\makeheadrule{demo}{\headwidth}{1pt}
+\makefootrule{demo}{\headwidth}{1pt}{\footruleskip}
+\makeheadfootruleprefix{demo}{\color{RoyalPurple}}{\color{Dandelion}}
+\makeheadposition{demo}{flushright}{flushright}{center}{flushleft}
+
+\begin{document}
+\pagestyle{demo}
+\lipsum[1-10]
+\end{document}
