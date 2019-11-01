@@ -1,11 +1,11 @@
-\documentclass{memoir}
+\documentclass[showtrims]{memoir}
 
 \usepackage{lipsum}
 \usepackage[dvipsnames]{xcolor}
 
 \setstocksize{260mm}{190mm}
-\settrimmedsize{\stockheight}{\stockwidth}{*}
-\settrims{0pt}{0pt}
+\settrimmedsize{\dimexpr\stockheight-1cm\relax}{\dimexpr\stockwidth-3cm\relax}{*}
+\settrims{10pt}{10pt}
 \setlrmarginsandblock{30mm}{*}{1.618}
 \checkandfixthelayout
 
